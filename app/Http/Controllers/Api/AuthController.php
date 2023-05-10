@@ -20,8 +20,8 @@ class AuthController extends Controller
             'password' => 'required'
         ]);
 
-        if ($validate->fails()) {
-            return response(['message' => $validate->error()],400);
+        if(is_null($request->username) || is_null($request->password)){
+            return response(['message' => 'Inputan tidak boleh kosong'], 400);
         }
 
         if (!Auth::guard('pegawai')->attempt($loginData)) {

@@ -27,6 +27,35 @@ Route::post('/loginInstruktur', [App\Http\Controllers\Api\AuthController::class,
 Route::group(['middleware' => 'auth:PegawaiPage'], function(){
     Route::apiResource('/member', App\Http\Controllers\Api\MemberController::class);
     Route::put('/member/resetPassword/{id}', [App\Http\Controllers\Api\MemberController::class, 'resetPassword']);
+    Route::put('/member/deactiveMember/{id}', [App\Http\Controllers\Api\MemberController::class, 'deactiveMember']);
+    Route::get('/showActiveMember', [App\Http\Controllers\Api\MemberController::class, 'ActiveMember']);
+
     Route::apiResource("/instruktur", App\Http\Controllers\Api\InstrukturController::class);
+    Route::apiResource("/pegawai", App\Http\Controllers\Api\PegawaiController::class);
+    Route::apiResource("/kelas", App\Http\Controllers\Api\KelasController::class);
+
     Route::apiResource("/jadwal", App\Http\Controllers\Api\JadwalUmumController::class);
+    Route::get('/showMonday', [App\Http\Controllers\Api\JadwalUmumController::class, 'showMonday']);
+    Route::get('/showTuesday', [App\Http\Controllers\Api\JadwalUmumController::class, 'showTuesday']);
+    Route::get('/showWednesday', [App\Http\Controllers\Api\JadwalUmumController::class, 'showWednesday']);
+    Route::get('/showThursday', [App\Http\Controllers\Api\JadwalUmumController::class, 'showThursday']);
+    Route::get('/showFriday', [App\Http\Controllers\Api\JadwalUmumController::class, 'showFriday']);
+    Route::get('/showSaturday', [App\Http\Controllers\Api\JadwalUmumController::class, 'showSaturday']);
+    Route::get('/showSunday', [App\Http\Controllers\Api\JadwalUmumController::class, 'showSunday']);
+    
+    Route::apiResource("/jadwalHarian", App\Http\Controllers\Api\JadwalHarianController::class);
+    Route::get('/showMondayHarian', [App\Http\Controllers\Api\JadwalHarianController::class, 'jadwalHarianMonday']);
+    Route::get('/showTuesdayHarian', [App\Http\Controllers\Api\JadwalHarianController::class, 'jadwalHarianTuesday']);
+    Route::get('/showWednesdayHarian', [App\Http\Controllers\Api\JadwalHarianController::class, 'jadwalHarianWednesday']);
+    Route::get('/showThursdayHarian', [App\Http\Controllers\Api\JadwalHarianController::class, 'jadwalHarianThursday']);
+    Route::get('/showFridayHarian', [App\Http\Controllers\Api\JadwalHarianController::class, 'jadwalHarianFriday']);
+    Route::get('/showSaturdayHarian', [App\Http\Controllers\Api\JadwalHarianController::class, 'jadwalHarianSaturday']);
+    Route::get('/showSundayHarian', [App\Http\Controllers\Api\JadwalHarianController::class, 'jadwalHarianSunday']);
+    
+
+    Route::apiResource("/depositReguler", App\Http\Controllers\Api\DepositRegulerController::class);
+    Route::apiResource("/depositKelas", App\Http\Controllers\Api\DepositKelasController::class);
+    Route::apiResource("/aktivasi", App\Http\Controllers\Api\TransaksiAktivasiController::class);
+    Route::apiResource("/promo", App\Http\Controllers\Api\PromoController::class);
+
 });

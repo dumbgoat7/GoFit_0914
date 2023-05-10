@@ -45,15 +45,13 @@ class MemberController extends Controller
 
         $validate = Validator::make($storeData, [
             'nama_member' => 'required|max:60',
-            'alamat_member' => 'required|max:100',
+            'alamat_member' => 'required',
             'no_telp' => 'required|max:13',
             'deposit_member' => 'required|numeric',
-            'masa_berlaku' => 'required|date_format:Y-m-d',
             'email_member' => 'required|email:rfc,dns',
-            'status' => 'required',
             'tanggal_lahir' => 'required|date_format:Y-m-d',
             'username' => 'required',
-            'password' => 'required|min:8',
+            'password' => 'required',
         ]);
         if($validate->fails()) {
             return response(['message' => $validate->errors()],400);
@@ -63,7 +61,8 @@ class MemberController extends Controller
         $date = Carbon::now()->format('y.m');
         $storeData['id_member'] = $date.'.'.$generate;
         $storeData['password'] = bcrypt($request->password);
-
+        $storeData['status'] = '0';
+        $storeData['masa_berlaku'] = null;
         $member = Member::create($storeData);
         return response([
             'message' => 'Add Member Success',
@@ -113,12 +112,10 @@ class MemberController extends Controller
         $updateData = $request->all();
         $validate = Validator::make($updateData, [
             'nama_member' => 'required|max:60',
-            'alamat_member' => 'required|max:100',
+            'alamat_member' => 'required',
             'no_telp' => 'required|max:13',
             'deposit_member' => 'required|numeric',
-            'masa_berlaku' => 'required|date_format:Y-m-d',
             'email_member' => 'required|email:rfc,dns',
-            'status' => 'required',
             'tanggal_lahir' => 'required|date_format:Y-m-d',
         ]);
 
@@ -129,9 +126,7 @@ class MemberController extends Controller
         $member->alamat_member = $updateData['alamat_member'];
         $member->no_telp = $updateData['no_telp'];
         $member->deposit_member = $updateData['deposit_member'];
-        $member->masa_berlaku = $updateData['masa_berlaku'];
         $member->email_member = $updateData['email_member'];
-        $member->status = $updateData['status'];
         $member->tanggal_lahir = $updateData['tanggal_lahir'];
         if($member->save()){
             return response([
@@ -196,6 +191,51 @@ class MemberController extends Controller
         return response([
             'message' => 'Reset Password Member Failed',
             'data' => null,
+        ], 400);
+    }
+
+    public function deactiveMember($id) {
+        $member = Member::find($id);
+
+        if(is_null($member)){
+            return response([
+                'message' => 'Member Not Found',
+                'data' => null
+            ],404);
+        }
+        $member->status = '0';
+        $member->masa_berlaku = null;
+        
+        if($member->save()){
+            return response([
+                'message' => 'Deactive Member Success',
+                'data' => $member,
+            ], 200);
+        }
+
+        return response([
+            'message' => 'Deactive Member Failed',
+            'data' => null,
+        ], 400);
+
+    }
+
+    public function ActiveMember() {
+ 
+        $member = DB::table('member')
+            ->where('status', '=', '1')
+            ->get();
+
+        if(count($member) > 0){
+            return response([
+                'message' => 'Retrieve All Active Member Success',
+                'data' => $member
+            ], 200);
+        }
+
+        return response([
+            'message' => 'Empty',
+            'data' => null
         ], 400);
     }
 }

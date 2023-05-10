@@ -6,7 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\JadwalUmum;
-
+use App\Models\JadwalHarian;
+use Illuminate\Support\Facades\DB;
 class JadwalUmumController extends Controller
 {
     /**
@@ -42,14 +43,27 @@ class JadwalUmumController extends Controller
         $validate = Validator::make($storeData, [
             'id_kelas' => 'required|numeric',
             'id_instruktur' => 'required|numeric',
+            'hari' => 'required',
             'tanggal_jadwal' => 'required|date_format:Y-m-d',
-            'jam_mulai' => 'required|date_format:H:i',
-            'sesi' => 'required|numeric',
+            'jam_mulai' => 'required|date_format:H:i:s',
+            'sesi_jadwal' => 'required|boolean',
         ]);
         if($validate->fails()) {
             return response(['message' => $validate->errors()],400);
         }
+        $checkData = DB::SELECT("SELECT * FROM jadwal_umum WHERE id_instruktur = $storeData[id_instruktur] AND jam_mulai = '$storeData[jam_mulai]' AND tanggal_jadwal = '$storeData[tanggal_jadwal]'" );
+        
+        if($checkData){
+            return response([
+                'message' => 'Schedule Already Exist',
+                'data' => $checkData
+            ], 400);
+        }
         $jadwalUmum = JadwalUmum::create($storeData);
+        $jadwalHarian = JadwalHarian::create([
+            'id_jadwal_umum' => $jadwalUmum->id_jadwal,
+            'status' => '',
+        ]);
         return response([
             'message' => 'Add Jadwal Umum Success',
             'data' => $jadwalUmum
@@ -97,18 +111,20 @@ class JadwalUmumController extends Controller
         $validate = Validator::make($updateData, [
             'id_kelas' => 'required',
             'id_instruktur' => 'required',
+            'hari' => 'required',
             'tanggal_jadwal' => 'required|date_format:Y-m-d',
-            'jam_mulai' => 'required|date_format:H:i',
-            'sesi' => 'required|boolean',
+            'jam_mulai' => 'required|date_format:H:i:s',
+            'sesi_jadwal' => 'required|boolean',
         ]);
         if($validate->fails()){
             return response(['message' => $validate->errors()],400);
         }
         $jadwalUmum->id_kelas = $updateData['id_kelas'];
         $jadwalUmum->id_instruktur = $updateData['id_instruktur'];
+        $jadwalUmum->hari = $updateData['hari'];
         $jadwalUmum->tanggal_jadwal = $updateData['tanggal_jadwal'];
         $jadwalUmum->jam_mulai = $updateData['jam_mulai'];
-        $jadwalUmum->sesi = $updateData['sesi'];
+        $jadwalUmum->sesi_jadwal = $updateData['sesi_jadwal'];
         
         if($jadwalUmum->save()){
             return response([
@@ -152,4 +168,154 @@ class JadwalUmumController extends Controller
             'data' => null,
         ], 400);
     }
+
+    public function showMonday() {
+        // $jadwalUmum = JadwalUmum::with(['Kelas', 'Instruktur'])->where('hari', 'Monday')->get();
+        $jadwalUmum = DB::table('jadwal_umum')
+            ->join('kelas', 'jadwal_umum.id_kelas', '=', 'kelas.id_kelas')
+            ->join('instruktur', 'jadwal_umum.id_instruktur', '=', 'instruktur.id')
+            ->select('jadwal_umum.*', 'kelas.nama_kelas', 'instruktur.nama_instruktur')
+            ->where('jadwal_umum.hari', '=', 'Monday')
+            ->orderby('jadwal_umum.jam_mulai', 'asc')
+            ->get();
+        if(count($jadwalUmum) > 0){
+            return response([
+                'message' => 'Retrieve All Success',
+                'data' => $jadwalUmum
+            ], 200);
+        }
+        return response([
+            'message' => 'Empty',
+            'data' => null
+        ], 400);
+    }
+
+    public function showTuesday() {
+        // $jadwalUmum = JadwalUmum::with(['Kelas', 'Instruktur'])->where('hari', 'Tuesday')->get();
+        $jadwalUmum = DB::table('jadwal_umum')
+            ->join('kelas', 'jadwal_umum.id_kelas', '=', 'kelas.id_kelas')
+            ->join('instruktur', 'jadwal_umum.id_instruktur', '=', 'instruktur.id')
+            ->select('jadwal_umum.*', 'kelas.nama_kelas', 'instruktur.nama_instruktur')
+            ->where('jadwal_umum.hari', '=', 'Tuesday')
+            ->orderby('jadwal_umum.jam_mulai', 'asc')
+            ->get();
+        
+        if(count($jadwalUmum) > 0){
+            return response([
+                'message' => 'Retrieve All Success',
+                'data' => $jadwalUmum
+            ], 200);
+        }
+        return response([
+            'message' => 'Empty',
+            'data' => null
+        ], 400);
+    }
+
+
+    public function showWednesday() {
+        // $jadwalUmum = JadwalUmum::with(['Kelas', 'Instruktur'])->where('hari', 'Wednesday')->get();
+        $jadwalUmum = DB::table('jadwal_umum')
+            ->join('kelas', 'jadwal_umum.id_kelas', '=', 'kelas.id_kelas')
+            ->join('instruktur', 'jadwal_umum.id_instruktur', '=', 'instruktur.id')
+            ->select('jadwal_umum.*', 'kelas.nama_kelas', 'instruktur.nama_instruktur')
+            ->where('jadwal_umum.hari', '=', 'Wednesday')
+            ->orderby('jadwal_umum.jam_mulai', 'asc')
+            ->get();
+        if(count($jadwalUmum) > 0){
+            return response([
+                'message' => 'Retrieve All Success',
+                'data' => $jadwalUmum
+            ], 200);
+        }
+        return response([
+            'message' => 'Empty',
+            'data' => null
+        ], 400);
+    }
+
+    public function showThursday() {
+        // $jadwalUmum = JadwalUmum::with(['Kelas', 'Instruktur'])->where('hari', 'Thursday')->get();
+        $jadwalUmum = DB::table('jadwal_umum')
+            ->join('kelas', 'jadwal_umum.id_kelas', '=', 'kelas.id_kelas')
+            ->join('instruktur', 'jadwal_umum.id_instruktur', '=', 'instruktur.id')
+            ->select('jadwal_umum.*', 'kelas.nama_kelas', 'instruktur.nama_instruktur')
+            ->where('jadwal_umum.hari', '=', 'Thursday')
+            ->orderby('jadwal_umum.jam_mulai', 'asc')
+            ->get();
+        if(count($jadwalUmum) > 0){
+            return response([
+                'message' => 'Retrieve All Success',
+                'data' => $jadwalUmum
+            ], 200);
+        }
+        return response([
+            'message' => 'Empty',
+            'data' => null
+        ], 400);
+    }
+
+    public function showFriday() {
+        // $jadwalUmum = JadwalUmum::with(['Kelas', 'Instruktur'])->where('hari', 'Friday')->get();
+        $jadwalUmum = DB::table('jadwal_umum')
+            ->join('kelas', 'jadwal_umum.id_kelas', '=', 'kelas.id_kelas')
+            ->join('instruktur', 'jadwal_umum.id_instruktur', '=', 'instruktur.id')
+            ->select('jadwal_umum.*', 'kelas.nama_kelas', 'instruktur.nama_instruktur')
+            ->where('jadwal_umum.hari', '=', 'Friday')
+            ->orderby('jadwal_umum.jam_mulai', 'asc')
+            ->get();
+        if(count($jadwalUmum) > 0){
+            return response([
+                'message' => 'Retrieve All Success',
+                'data' => $jadwalUmum
+            ], 200);
+        }
+        return response([
+            'message' => 'Empty',
+            'data' => null
+        ], 400);
+    }
+
+    public function showSaturday() {
+        // $jadwalUmum = JadwalUmum::with(['Kelas', 'Instruktur'])->where('hari', 'Saturday')->get();
+        $jadwalUmum = DB::table('jadwal_umum')
+            ->join('kelas', 'jadwal_umum.id_kelas', '=', 'kelas.id_kelas')
+            ->join('instruktur', 'jadwal_umum.id_instruktur', '=', 'instruktur.id')
+            ->select('jadwal_umum.*', 'kelas.nama_kelas', 'instruktur.nama_instruktur')
+            ->where('jadwal_umum.hari', '=', 'Saturday')
+            ->orderby('jadwal_umum.jam_mulai', 'asc')
+            ->get();
+        if(count($jadwalUmum) > 0){
+            return response([
+                'message' => 'Retrieve All Success',
+                'data' => $jadwalUmum
+            ], 200);
+        }
+        return response([
+            'message' => 'Empty',
+            'data' => null
+        ], 400);
+    }
+
+    public function showSunday() {
+        // $jadwalUmum = JadwalUmum::with(['Kelas', 'Instruktur'])->where('hari', 'Sunday')->get();
+        $jadwalUmum = DB::table('jadwal_umum')
+            ->join('kelas', 'jadwal_umum.id_kelas', '=', 'kelas.id_kelas')
+            ->join('instruktur', 'jadwal_umum.id_instruktur', '=', 'instruktur.id')
+            ->select('jadwal_umum.*', 'kelas.nama_kelas', 'instruktur.nama_instruktur')
+            ->where('jadwal_umum.hari', '=', 'Sunday')
+            ->orderby('jadwal_umum.jam_mulai', 'asc')
+            ->get();
+        if(count($jadwalUmum) > 0){
+            return response([
+                'message' => 'Retrieve All Success',
+                'data' => $jadwalUmum
+            ], 200);
+        }
+        return response([
+            'message' => 'Empty',
+            'data' => null
+        ], 400);
+    }
+
 }

@@ -15,9 +15,10 @@ class JadwalUmum extends Model
     protected $fillable = [
         'id_kelas',
         'id_instruktur',
+        'hari',
         'tanggal_jadwal',
         'jam_mulai',
-        'sesi',
+        'sesi_jadwal',
     ];
 
     public function Kelas(){

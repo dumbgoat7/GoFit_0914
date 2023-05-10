@@ -43,12 +43,12 @@ class InstrukturController extends Controller
         $validate = Validator::make($storeData, [
             'nama_instruktur' => 'required|max:60',
             'no_telp' => 'required|max:13',
-            'alamat_instruktur' => 'required|max:100',
+            'alamat_instruktur' => 'required',
             'gaji_instruktur' => 'required|numeric',
             'email_instruktur' => 'required|email:rfc,dns',
             'tanggal_lahir' => 'required|date_format:Y-m-d',
             'username' => 'required',
-            'password' => 'required|min:8',
+            'password' => 'required',
         ]);
         if($validate->fails()) {
             return response(['message' => $validate->errors()],400);
@@ -104,7 +104,7 @@ class InstrukturController extends Controller
         $validate = Validator::make($updateData, [
             'nama_instruktur' => 'required|max:60',
             'no_telp' => 'required|max:13',
-            'alamat_instruktur' => 'required|max:100',
+            'alamat_instruktur' => 'required',
             'gaji_instruktur' => 'required|numeric',
             'email_instruktur' => 'required|email:rfc,dns',
             'tanggal_lahir' => 'required|date_format:Y-m-d',
