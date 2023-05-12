@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\JadwalUmum;
-use App\Models\JadwalHarian;
 use Illuminate\Support\Facades\DB;
 class JadwalUmumController extends Controller
 {
@@ -60,10 +59,6 @@ class JadwalUmumController extends Controller
             ], 400);
         }
         $jadwalUmum = JadwalUmum::create($storeData);
-        $jadwalHarian = JadwalHarian::create([
-            'id_jadwal_umum' => $jadwalUmum->id_jadwal,
-            'status' => '',
-        ]);
         return response([
             'message' => 'Add Jadwal Umum Success',
             'data' => $jadwalUmum

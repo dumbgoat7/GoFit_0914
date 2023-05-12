@@ -51,6 +51,7 @@ Route::group(['middleware' => 'auth:PegawaiPage'], function(){
     Route::get('/showFridayHarian', [App\Http\Controllers\Api\JadwalHarianController::class, 'jadwalHarianFriday']);
     Route::get('/showSaturdayHarian', [App\Http\Controllers\Api\JadwalHarianController::class, 'jadwalHarianSaturday']);
     Route::get('/showSundayHarian', [App\Http\Controllers\Api\JadwalHarianController::class, 'jadwalHarianSunday']);
+    Route::get('/search/{class}', [App\Http\Controllers\Api\JadwalHarianController::class, 'search']);
     
 
     Route::apiResource("/depositReguler", App\Http\Controllers\Api\DepositRegulerController::class);

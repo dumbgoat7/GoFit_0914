@@ -197,6 +197,27 @@ class JadwalHarianController extends Controller
         ], 400);
     }
 
+    public function search($class) {
+        $jadwalHarian = DB::table('jadwal_harian')
+                        ->join('jadwal_umum', 'jadwal_harian.id_jadwal_umum', '=', 'jadwal_umum.id_jadwal')
+                        ->join('kelas', 'jadwal_umum.id_kelas', '=', 'kelas.id_kelas')
+                        ->join('instruktur', 'jadwal_umum.id_instruktur', '=', 'instruktur.id')
+                        ->select('jadwal_harian.*', 'jadwal_umum.sesi_jadwal', 'jadwal_umum.hari', 'jadwal_umum.jam_mulai', 'kelas.nama_kelas', 'instruktur.nama_instruktur')
+                        ->where('kelas.nama_kelas', 'like', '%'.$class.'%')
+                        ->get();
+
+        if(count($jadwalHarian) > 0){
+            return response([
+                'message' => 'Jadwal Harian Found',
+                'data' => $jadwalHarian
+            ], 200);
+        }
+        return response([
+            'message' => 'There is no such class here',
+            'data' => null
+        ], 400);
+    }
+
     /**
      * Store a newly created resource in storage.
      *
