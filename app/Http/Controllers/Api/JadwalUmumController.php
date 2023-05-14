@@ -43,14 +43,13 @@ class JadwalUmumController extends Controller
             'id_kelas' => 'required|numeric',
             'id_instruktur' => 'required|numeric',
             'hari' => 'required',
-            'tanggal_jadwal' => 'required|date_format:Y-m-d',
             'jam_mulai' => 'required|date_format:H:i:s',
             'sesi_jadwal' => 'required|boolean',
         ]);
         if($validate->fails()) {
             return response(['message' => $validate->errors()],400);
         }
-        $checkData = DB::SELECT("SELECT * FROM jadwal_umum WHERE id_instruktur = $storeData[id_instruktur] AND jam_mulai = '$storeData[jam_mulai]' AND tanggal_jadwal = '$storeData[tanggal_jadwal]'" );
+        $checkData = DB::SELECT("SELECT * FROM jadwal_umum WHERE id_instruktur = $storeData[id_instruktur] AND jam_mulai = '$storeData[jam_mulai]'" );
         
         if($checkData){
             return response([
@@ -107,30 +106,38 @@ class JadwalUmumController extends Controller
             'id_kelas' => 'required',
             'id_instruktur' => 'required',
             'hari' => 'required',
-            'tanggal_jadwal' => 'required|date_format:Y-m-d',
             'jam_mulai' => 'required|date_format:H:i:s',
             'sesi_jadwal' => 'required|boolean',
         ]);
         if($validate->fails()){
             return response(['message' => $validate->errors()],400);
         }
-        $jadwalUmum->id_kelas = $updateData['id_kelas'];
-        $jadwalUmum->id_instruktur = $updateData['id_instruktur'];
-        $jadwalUmum->hari = $updateData['hari'];
-        $jadwalUmum->tanggal_jadwal = $updateData['tanggal_jadwal'];
-        $jadwalUmum->jam_mulai = $updateData['jam_mulai'];
-        $jadwalUmum->sesi_jadwal = $updateData['sesi_jadwal'];
+        $checkData = DB::SELECT("SELECT * FROM jadwal_umum WHERE id_instruktur = $storeData[id_instruktur] AND jam_mulai = '$storeData[jam_mulai]'" );
         
-        if($jadwalUmum->save()){
+        if($checkData){
             return response([
-                'message' => 'Update Jadwal Umum Success',
-                'data' => $jadwalUmum
-            ], 200);
+                'message' => 'Schedule Already Exist',
+                'data' => $checkData
+            ], 400);
+        } else {
+            $jadwalUmum->id_kelas = $updateData['id_kelas'];
+            $jadwalUmum->id_instruktur = $updateData['id_instruktur'];
+            $jadwalUmum->hari = $updateData['hari'];
+            $jadwalUmum->jam_mulai = $updateData['jam_mulai'];
+            $jadwalUmum->sesi_jadwal = $updateData['sesi_jadwal'];
+            
+            if($jadwalUmum->save()){
+                return response([
+                    'message' => 'Update Jadwal Umum Success',
+                    'data' => $jadwalUmum
+                ], 200);
+            }
+            return response([
+                'message' => 'Update Jadwal Umum Failed',
+                'data' => null
+            ], 400);
         }
-        return response([
-            'message' => 'Update Jadwal Umum Failed',
-            'data' => null
-        ], 400);
+        
 
     }
 

@@ -20,7 +20,7 @@ class DepositKelas extends Model
         'id_member',
         'id_kelas',
         'tanggal_transaksi',
-        'total_deposit',
+        'deposit',
         'deposit_kelas',
         'masa_berlaku',
     ];

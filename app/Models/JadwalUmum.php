@@ -16,7 +16,6 @@ class JadwalUmum extends Model
         'id_kelas',
         'id_instruktur',
         'hari',
-        'tanggal_jadwal',
         'jam_mulai',
         'sesi_jadwal',
     ];

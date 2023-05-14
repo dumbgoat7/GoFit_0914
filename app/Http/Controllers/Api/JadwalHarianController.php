@@ -41,7 +41,7 @@ class JadwalHarianController extends Controller
                         ->join('jadwal_umum', 'jadwal_harian.id_jadwal_umum', '=', 'jadwal_umum.id_jadwal')
                         ->join('kelas', 'jadwal_umum.id_kelas', '=', 'kelas.id_kelas')
                         ->join('instruktur', 'jadwal_umum.id_instruktur', '=', 'instruktur.id')
-                        ->select('jadwal_harian.*','jadwal_harian.id_jadwal_umum', 'jadwal_umum.sesi_jadwal', 'jadwal_umum.hari', 'jadwal_umum.tanggal_jadwal',
+                        ->select('jadwal_harian.*','jadwal_harian.id_jadwal_umum', 'jadwal_umum.sesi_jadwal', 'jadwal_umum.hari', 
                         'jadwal_umum.jam_mulai', 'jadwal_umum.id_kelas', 'jadwal_umum.id_instruktur', 'kelas.nama_kelas', 'instruktur.nama_instruktur')
                         ->where('jadwal_umum.hari', '=', 'Monday')
                         ->orderBy('jadwal_umum.jam_mulai', 'asc')
@@ -64,7 +64,7 @@ class JadwalHarianController extends Controller
                         ->join('jadwal_umum', 'jadwal_harian.id_jadwal_umum', '=', 'jadwal_umum.id_jadwal')
                         ->join('kelas', 'jadwal_umum.id_kelas', '=', 'kelas.id_kelas')
                         ->join('instruktur', 'jadwal_umum.id_instruktur', '=', 'instruktur.id')
-                        ->select('jadwal_harian.*','jadwal_harian.id_jadwal_umum', 'jadwal_umum.sesi_jadwal', 'jadwal_umum.hari', 'jadwal_umum.tanggal_jadwal',
+                        ->select('jadwal_harian.*','jadwal_harian.id_jadwal_umum', 'jadwal_umum.sesi_jadwal', 'jadwal_umum.hari', 
                         'jadwal_umum.jam_mulai', 'jadwal_umum.id_kelas', 'jadwal_umum.id_instruktur', 'kelas.nama_kelas', 'instruktur.nama_instruktur')
                         ->where('jadwal_umum.hari', '=', 'Tuesday')
                         ->orderby('jadwal_umum.jam_mulai', 'asc')
@@ -87,7 +87,7 @@ class JadwalHarianController extends Controller
                         ->join('jadwal_umum', 'jadwal_harian.id_jadwal_umum', '=', 'jadwal_umum.id_jadwal')
                         ->join('kelas', 'jadwal_umum.id_kelas', '=', 'kelas.id_kelas')
                         ->join('instruktur', 'jadwal_umum.id_instruktur', '=', 'instruktur.id')
-                        ->select('jadwal_harian.*','jadwal_harian.id_jadwal_umum', 'jadwal_umum.sesi_jadwal', 'jadwal_umum.hari', 'jadwal_umum.tanggal_jadwal',
+                        ->select('jadwal_harian.*','jadwal_harian.id_jadwal_umum', 'jadwal_umum.sesi_jadwal', 'jadwal_umum.hari', 
                         'jadwal_umum.jam_mulai', 'jadwal_umum.id_kelas', 'jadwal_umum.id_instruktur', 'kelas.nama_kelas', 'instruktur.nama_instruktur')
                         ->where('jadwal_umum.hari', '=', 'Wednesday')
                         ->orderby('jadwal_umum.jam_mulai', 'asc')
@@ -110,7 +110,7 @@ class JadwalHarianController extends Controller
                         ->join('jadwal_umum', 'jadwal_harian.id_jadwal_umum', '=', 'jadwal_umum.id_jadwal')
                         ->join('kelas', 'jadwal_umum.id_kelas', '=', 'kelas.id_kelas')
                         ->join('instruktur', 'jadwal_umum.id_instruktur', '=', 'instruktur.id')
-                        ->select('jadwal_harian.*','jadwal_harian.id_jadwal_umum', 'jadwal_umum.sesi_jadwal', 'jadwal_umum.hari', 'jadwal_umum.tanggal_jadwal',
+                        ->select('jadwal_harian.*','jadwal_harian.id_jadwal_umum', 'jadwal_umum.sesi_jadwal', 'jadwal_umum.hari', 
                         'jadwal_umum.jam_mulai', 'jadwal_umum.id_kelas', 'jadwal_umum.id_instruktur', 'kelas.nama_kelas', 'instruktur.nama_instruktur')
                         ->where('jadwal_umum.hari', '=', 'Thursday')
                         ->orderby('jadwal_umum.jam_mulai', 'asc')
@@ -133,7 +133,7 @@ class JadwalHarianController extends Controller
                         ->join('jadwal_umum', 'jadwal_harian.id_jadwal_umum', '=', 'jadwal_umum.id_jadwal')
                         ->join('kelas', 'jadwal_umum.id_kelas', '=', 'kelas.id_kelas')
                         ->join('instruktur', 'jadwal_umum.id_instruktur', '=', 'instruktur.id')
-                        ->select('jadwal_harian.*','jadwal_harian.id_jadwal_umum', 'jadwal_umum.sesi_jadwal', 'jadwal_umum.hari', 'jadwal_umum.tanggal_jadwal',
+                        ->select('jadwal_harian.*','jadwal_harian.id_jadwal_umum', 'jadwal_umum.sesi_jadwal', 'jadwal_umum.hari',
                         'jadwal_umum.jam_mulai', 'jadwal_umum.id_kelas', 'jadwal_umum.id_instruktur', 'kelas.nama_kelas', 'instruktur.nama_instruktur')
                         ->where('jadwal_umum.hari', '=', 'Friday')
                         ->orderby('jadwal_umum.jam_mulai', 'asc')
@@ -156,7 +156,7 @@ class JadwalHarianController extends Controller
                         ->join('jadwal_umum', 'jadwal_harian.id_jadwal_umum', '=', 'jadwal_umum.id_jadwal')
                         ->join('kelas', 'jadwal_umum.id_kelas', '=', 'kelas.id_kelas')
                         ->join('instruktur', 'jadwal_umum.id_instruktur', '=', 'instruktur.id')
-                        ->select('jadwal_harian.*','jadwal_harian.id_jadwal_umum', 'jadwal_umum.sesi_jadwal', 'jadwal_umum.hari', 'jadwal_umum.tanggal_jadwal',
+                        ->select('jadwal_harian.*','jadwal_harian.id_jadwal_umum', 'jadwal_umum.sesi_jadwal', 'jadwal_umum.hari',
                         'jadwal_umum.jam_mulai', 'jadwal_umum.id_kelas', 'jadwal_umum.id_instruktur', 'kelas.nama_kelas', 'instruktur.nama_instruktur')
                         ->where('jadwal_umum.hari', '=', 'Saturday')
                         ->orderby('jadwal_umum.jam_mulai', 'asc')
@@ -179,8 +179,7 @@ class JadwalHarianController extends Controller
                         ->join('jadwal_umum', 'jadwal_harian.id_jadwal_umum', '=', 'jadwal_umum.id_jadwal')
                         ->join('kelas', 'jadwal_umum.id_kelas', '=', 'kelas.id_kelas')
                         ->join('instruktur', 'jadwal_umum.id_instruktur', '=', 'instruktur.id')
-                        ->select('jadwal_harian.*','jadwal_harian.id_jadwal_umum', 'jadwal_umum.sesi_jadwal', 'jadwal_umum.hari', 'jadwal_umum.tanggal_jadwal',
-                        'jadwal_umum.jam_mulai', 'jadwal_umum.id_kelas', 'jadwal_umum.id_instruktur', 'kelas.nama_kelas', 'instruktur.nama_instruktur')
+                        ->select('jadwal_harian.*','jadwal_harian.id_jadwal_umum', 'jadwal_umum.sesi_jadwal', 'jadwal_umum.hari', 'jadwal_umum.jam_mulai', 'jadwal_umum.id_kelas', 'jadwal_umum.id_instruktur', 'kelas.nama_kelas', 'instruktur.nama_instruktur')
                         ->where('jadwal_umum.hari', '=', 'Sunday')
                         ->orderby('jadwal_umum.jam_mulai', 'asc')
                         ->get();
@@ -202,7 +201,8 @@ class JadwalHarianController extends Controller
                         ->join('jadwal_umum', 'jadwal_harian.id_jadwal_umum', '=', 'jadwal_umum.id_jadwal')
                         ->join('kelas', 'jadwal_umum.id_kelas', '=', 'kelas.id_kelas')
                         ->join('instruktur', 'jadwal_umum.id_instruktur', '=', 'instruktur.id')
-                        ->select('jadwal_harian.*', 'jadwal_umum.sesi_jadwal', 'jadwal_umum.hari', 'jadwal_umum.jam_mulai', 'kelas.nama_kelas', 'instruktur.nama_instruktur')
+                        ->select('jadwal_harian.*','jadwal_harian.id_jadwal_umum', 'jadwal_umum.sesi_jadwal', 'jadwal_umum.hari','jadwal_umum.jam_mulai', 
+                        'jadwal_umum.id_kelas', 'jadwal_umum.id_instruktur', 'kelas.nama_kelas', 'instruktur.nama_instruktur')
                         ->where('kelas.nama_kelas', 'like', '%'.$class.'%')
                         ->get();
 
@@ -233,6 +233,9 @@ class JadwalHarianController extends Controller
         if($validate->fails())
             return response(['message' => $validate->errors()],400);
 
+        $jadwalUmum = DB::table('jadwal_umum')
+                        ->where('id_jadwal', '=', $storeData['id_jadwal_umum'])
+                        ->get();
         $jadwalHarian = JadwalHarian::create($storeData);
         return response([
             'message' => 'Add Jadwal Harian Success',

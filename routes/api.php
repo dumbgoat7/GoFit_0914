@@ -58,5 +58,5 @@ Route::group(['middleware' => 'auth:PegawaiPage'], function(){
     Route::apiResource("/depositKelas", App\Http\Controllers\Api\DepositKelasController::class);
     Route::apiResource("/aktivasi", App\Http\Controllers\Api\TransaksiAktivasiController::class);
     Route::apiResource("/promo", App\Http\Controllers\Api\PromoController::class);
-
+    Route::apiResource("/ijin", App\Http\Controllers\Api\IjinController::class);
 });

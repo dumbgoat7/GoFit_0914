@@ -49,7 +49,57 @@ class DepositKelasController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $storeData = request()->all();
+
+        $validate = Validator::make($storeData, [
+            'id_kasir' => 'required',
+            'id_member' => 'required',
+            'id_promo' => 'required',
+            'deposit_kelas' => 'required',
+            'id_kelas' => 'required',
+        ]);
+
+        $kelas = DB::table('kelas')
+                    ->where('id_kelas', $storeData['id_kelas'])
+                    ->first();
+
+        $depositKelas = DB::table('transaksi_deposit_kelas')
+                        ->where('id_member', $storeData['id_member'])
+                        ->where('status', '1')
+                        ->first();
+        
+        if($depositKelas){
+            return response([
+                'message' => 'Member already have a class deposit',
+                'data' => null
+            ], 400);
+        }
+        $count = DB::table('transaksi_deposit_kelas')->count()+200;
+        $generate = sprintf("%d", $count);
+        $date = Carbon::now()->format('y.m');
+        $storeData['no_struk'] = $date.'.'.$generate;
+        $storeData['tanggal_transaksi'] = date('Y-m-d');
+        $storeData['status'] = '1';
+        if($storeData['id_promo'] == 3){
+            if ($storeData['deposit_kelas'] == 5) {
+
+                $storeData['deposit_kelas'] = $storeData['deposit_kelas'] + 1;
+                $storeData['deposit'] = $kelas->harga * $storeData['deposit_kelas'];
+                $storeData['masa_berlaku'] = date('Y-m-d', strtotime('+1 month'));
+
+            } else if ($storeData['deposit_kelas'] == 10) {
+
+                $storeData['deposit_kelas'] = $storeData['deposit_kelas'] + 3;
+                $storeData['deposit'] = $kelas->harga * $storeData['deposit_kelas'];
+                $storeData['masa_berlaku'] = date('Y-m-d', strtotime('+2 month'));
+            }
+
+            $depositKelas = DepositKelas::create($storeData);
+            return response([
+                'message' => 'Add Deposit Kelas Success',
+                'data' => $depositKelas,
+            ], 200);
+        }
     }
 
     /**
@@ -60,7 +110,14 @@ class DepositKelasController extends Controller
      */
     public function show($id)
     {
-        //
+        $depositKelas = DB::table('transaksi_deposit_kelas')
+                        ->join('member', 'transaksi_deposit_kelas.id_member', '=', 'member.id_member')
+                        ->join('pegawai','transaksi_deposit_kelas.id_kasir', '=', 'pegawai.id_pegawai')
+                        ->join('promo','transaksi_deposit_kelas.id_promo', '=', 'promo.id')
+                        ->join('kelas','transaksi_deposit_kelas.id_kelas', '=', 'kelas.id_kelas')
+                        ->select('transaksi_deposit_kelas.*', 'member.nama_member', 'pegawai.nama_pegawai', 'promo.nama_promo', 'kelas.nama_kelas')
+                        ->where('transaksi_deposit_kelas.no_struk', $id)
+                        ->get();
     }
 
     /**
