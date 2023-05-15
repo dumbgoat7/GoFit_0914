@@ -53,10 +53,11 @@ Route::group(['middleware' => 'auth:PegawaiPage'], function(){
     Route::get('/showSundayHarian', [App\Http\Controllers\Api\JadwalHarianController::class, 'jadwalHarianSunday']);
     Route::get('/search/{class}', [App\Http\Controllers\Api\JadwalHarianController::class, 'search']);
     
-
     Route::apiResource("/depositReguler", App\Http\Controllers\Api\DepositRegulerController::class);
     Route::apiResource("/depositKelas", App\Http\Controllers\Api\DepositKelasController::class);
     Route::apiResource("/aktivasi", App\Http\Controllers\Api\TransaksiAktivasiController::class);
     Route::apiResource("/promo", App\Http\Controllers\Api\PromoController::class);
     Route::apiResource("/ijin", App\Http\Controllers\Api\IjinController::class);
+    Route::put('/ijin/isConfirmed/{id}', [App\Http\Controllers\Api\IjinController::class, 'isConfirmed']);
+
 });

@@ -14,7 +14,9 @@ class JadwalHarian extends Model
 
     protected $fillable = [
         'id_jadwal_umum',
+        'id_instruktur',
         'tanggal',
+        'kapasitas',
         'status',
     ];
 }

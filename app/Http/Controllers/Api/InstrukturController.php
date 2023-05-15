@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Instruktur;
-
+use Illuminate\Support\Facades\DB;
 class InstrukturController extends Controller
 {
     /**
@@ -16,7 +16,14 @@ class InstrukturController extends Controller
      */
     public function index()
     {
-        $instruktur = Instruktur::all();
+        // $instruktur = DB::table('instruktur')
+        //     ->join('ijin_instruktur', 'instruktur.id', '=', 'ijin_instruktur.id_instruktur')
+        //     ->select('instruktur.id','instruktur.nama_instruktur', 'instruktur.no_telp','instruktur.alamat_instruktur','instruktur.gaji_instruktur','instruktur.email_instruktur','instruktur.tanggal_lahir','instruktur.username','instruktur.password', DB::raw('COUNT(ijin_instruktur.id_instruktur) as jumlah_ijin'))
+        //     ->groupBy('instruktur.id', 'instruktur.nama_instruktur', 'instruktur.no_telp', 'instruktur.alamat_instruktur', 'instruktur.gaji_instruktur', 'instruktur.email_instruktur', 'instruktur.tanggal_lahir', 'instruktur.username', 'instruktur.password')
+        //     ->get();
+        
+            $query = "Select *, (SELECT COUNT(id_instruktur) FROM ijin_instruktur WHERE ijin_instruktur.id_instruktur = instruktur.id) as jumlah_ijin FROM instruktur";
+            $instruktur = DB::select(DB::raw($query));
 
         if(count($instruktur) > 0){
             return response([

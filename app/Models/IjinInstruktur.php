@@ -14,7 +14,7 @@ class IjinInstruktur extends Model
     protected $fillable = [
         'id_instruktur',
         'id_mo',
-        'id_jadwal_harian',
+        'id_instruktur_pengganti',
         'tanggal_pembuatan_ijin',
         'tanggal_ijin',
         'keterangan',
