@@ -56,10 +56,18 @@ class IjinController extends Controller
         ]);
 
         $storeData['tanggal_pembuatan_ijin'] = date('Y-m-d');
+        $startdate = Carbon::parse($storeData['tanggal_pembuatan_ijin']);
+        $enddate = Carbon::parse($storeData['tanggal_ijin']);
+        if($diffinDays = $startdate->diffInDays($enddate) < 1) {
+            return response([
+                'message' => 'You have to make absence request at least 1 day before',
+                'data' => null
+            ], 400);
+        }
         $storeData['status'] = '0';
         $ijin = IjinInstruktur::create($storeData);
         return response([
-            'message' => 'Add Ijin Success',
+            'message' => 'Absence Request Created',
             'data' => $ijin,
         ], 200);
     }

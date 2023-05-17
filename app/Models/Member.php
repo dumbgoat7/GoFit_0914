@@ -28,6 +28,7 @@ class Member extends Authenticatable
         'alamat_member',
         'no_telp',
         'deposit_member',
+        'deposit_kelas', 
         'masa_berlaku',
         'email_member',
         'status',

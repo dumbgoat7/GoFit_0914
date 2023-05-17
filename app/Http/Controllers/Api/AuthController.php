@@ -48,12 +48,12 @@ class AuthController extends Controller
             'password' => 'required'
         ]);
 
-        if ($validate->fails()) {
-            return response(['message' => $validate->error()],400);
+        if(is_null($request->username) || is_null($request->password)){
+            return response(['message' => 'Input data cannot be empty'], 400);
         }
 
         if (!Auth::guard('member')->attempt($loginData)) {
-            return response(['message'=> 'Invalid Credential'],401);
+            return response(['message'=> 'This username and password is not a member'],401);
         }
         $user = Auth::guard('member')->user();
         $token = $user->createToken('Authentication Token')->accessToken;
@@ -75,12 +75,12 @@ class AuthController extends Controller
             'password' => 'required'
         ]);
 
-        if ($validate->fails()) {
-            return response(['message' => $validate->error()],400);
+        if(is_null($request->username) || is_null($request->password)){
+            return response(['message' => 'Input data cannot be empty'], 400);
         }
 
         if (!Auth::guard('instruktur')->attempt($loginData)) {
-            return response(['message'=> 'Invalid Credential'],401);
+            return response(['message'=> 'This username and password is not an instructur'],401);
         }
 
         $user = Auth::guard('instruktur')->user();
@@ -94,6 +94,39 @@ class AuthController extends Controller
         ]);
 
     }
+    public function loginMO(Request $request){
+        $loginData = $request->all();
+
+        $validate = Validator::make($loginData,[
+            'username' => 'required',
+            'password' => 'required'
+        ]);
+
+        if(is_null($request->username) || is_null($request->password)){
+            return response(['message' => 'Input data cannot be empty'], 400);
+        }
+
+        if (!Auth::guard('pegawai')->attempt($loginData)) {
+            return response(['message'=> 'This username and password is not an employee'],401);
+        }
+        $user = Auth::guard('pegawai')->user();
+        
+        if($user->role == 'Manager Operasional'){
+            
+            $token = $user->createToken('Authentication Token')->accessToken;
+    
+            return response([
+                'message' => 'Authenticated',
+                'user' => $user,
+                'token_type' => 'Bearer',
+                'access_token' => $token
+            ]);
+        } else {
+            return response(['message'=> 'This username and password is not a Manager Operational'],401);
+        }
+        
+    }
+
     public function logout(Request $request)
     {
         $request->user()->token()->revoke();

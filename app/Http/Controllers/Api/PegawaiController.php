@@ -33,6 +33,24 @@ class PegawaiController extends Controller
         ], 400);
     }
 
+    public function resetPassword($username)
+    {
+        $pegawai = User::where('username', $username)->first();
+
+        if(is_null($pegawai)){
+            return response([
+                'message' => 'Pegawai Not Found',
+                'data' => null
+            ], 404);
+        }
+        $pegawai->password = bcrypt($pegawai->tanggal_lahir);
+        $pegawai->save();
+        return response([
+            'message' => 'Reset Password Success',
+            'data' => $pegawai
+        ], 200);
+    }
+
     /**
      * Store a newly created resource in storage.
      *

@@ -22,12 +22,19 @@ use Illuminate\Support\Facades\Route;
 Route::post('/loginPegawai', [App\Http\Controllers\Api\AuthController::class, 'loginPegawai']);
 Route::post('/loginMember', [App\Http\Controllers\Api\AuthController::class, 'loginMember']);
 Route::post('/loginInstruktur', [App\Http\Controllers\Api\AuthController::class, 'loginInstruktur']);
+Route::post('/loginMO', [App\Http\Controllers\Api\AuthController::class, 'loginMO']);
+
+
+Route::put('/resetPasswordIns/{username}', [App\Http\Controllers\Api\InstrukturController::class, 'resetPassword']);
+
+Route::put('/resetPasswordMO/{username}', [App\Http\Controllers\Api\PegawaiController::class, 'resetPassword']);
 // Route::middleware('auth:api')->post('/logout', [App\Http\Controllers\Api\AuthController::class, 'logout']);
 
 Route::group(['middleware' => 'auth:PegawaiPage'], function(){
     Route::apiResource('/member', App\Http\Controllers\Api\MemberController::class);
     Route::put('/member/resetPassword/{id}', [App\Http\Controllers\Api\MemberController::class, 'resetPassword']);
     Route::put('/member/deactiveMember/{id}', [App\Http\Controllers\Api\MemberController::class, 'deactiveMember']);
+    Route::get('/showDeactiveMember', [App\Http\Controllers\Api\MemberController::class, 'getDeactiveMember']);
     Route::get('/showActiveMember', [App\Http\Controllers\Api\MemberController::class, 'ActiveMember']);
 
     Route::apiResource("/instruktur", App\Http\Controllers\Api\InstrukturController::class);
@@ -55,9 +62,13 @@ Route::group(['middleware' => 'auth:PegawaiPage'], function(){
     
     Route::apiResource("/depositReguler", App\Http\Controllers\Api\DepositRegulerController::class);
     Route::apiResource("/depositKelas", App\Http\Controllers\Api\DepositKelasController::class);
+    Route::put('/resetDeposit/{id}', [App\Http\Controllers\Api\DepositKelasController::class, 'resetDeposit']);
+    Route::get('/showExpired', [App\Http\Controllers\Api\DepositKelasController::class, 'showExpired']);
     Route::apiResource("/aktivasi", App\Http\Controllers\Api\TransaksiAktivasiController::class);
     Route::apiResource("/promo", App\Http\Controllers\Api\PromoController::class);
     Route::apiResource("/ijin", App\Http\Controllers\Api\IjinController::class);
     Route::put('/ijin/isConfirmed/{id}', [App\Http\Controllers\Api\IjinController::class, 'isConfirmed']);
+
+    Route::apiResource("/bookingKelas", App\Http\Controllers\Api\bookingKelasController::class);
 
 });

@@ -165,4 +165,22 @@ class InstrukturController extends Controller
             'data' => null,
         ],400);
     }
+
+    public function resetPassword($username) {
+        $instruktur = Instruktur::where('username', $username)->first();
+
+        if(is_null($instruktur)){
+            return response([
+                'message' => 'Instruktur Not Found',
+                'data' => null
+            ], 404);
+        }
+        $instruktur->password = bcrypt($instruktur->tanggal_lahir);
+        $instruktur->save();
+        return response([
+            'message' => 'Reset Password Success',
+            'data' => $instruktur
+        ], 200);
+
+    }
 }

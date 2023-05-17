@@ -63,6 +63,8 @@ class DepositKelasController extends Controller
                     ->where('id_kelas', $storeData['id_kelas'])
                     ->first();
 
+        $member = Member::find($storeData['id_member']);
+
         $depositKelas = DB::table('transaksi_deposit_kelas')
                         ->where('id_member', $storeData['id_member'])
                         ->where('status', '1')
@@ -79,7 +81,7 @@ class DepositKelasController extends Controller
         $date = Carbon::now()->format('y.m');
         $storeData['no_struk'] = $date.'.'.$generate;
         $storeData['tanggal_transaksi'] = date('Y-m-d');
-        $storeData['status'] = '1';
+        $storeData['status'] = 1;
         if($storeData['id_promo'] == 3){
             if ($storeData['deposit_kelas'] == 5) {
 
@@ -93,7 +95,8 @@ class DepositKelasController extends Controller
                 $storeData['deposit'] = $kelas->harga * $storeData['deposit_kelas'];
                 $storeData['masa_berlaku'] = date('Y-m-d', strtotime('+2 month'));
             }
-
+            $member->deposit_kelas = $storeData['deposit'];
+            $member->save();
             $depositKelas = DepositKelas::create($storeData);
             return response([
                 'message' => 'Add Deposit Kelas Success',
@@ -120,6 +123,63 @@ class DepositKelasController extends Controller
                         ->get();
     }
 
+    public function resetDeposit($id) {
+
+        $depositKelas = DepositKelas::find($id);
+
+        if($depositKelas->status == 0){
+            return response([
+                'message' => 'Deposit Kelas Already Expired',
+                'data' => null
+            ], 400);
+        }
+        if($depositKelas->masa_berlaku > date('Y-m-d')){
+            return response([
+                'message' => 'Class Deposit is still Active',
+                'data' => null
+            ], 400);
+        }
+
+        $depositKelas->status = 0;
+        $depositKelas->masa_berlaku = date('Y-m-d');
+        
+        $member = Member::find($depositKelas->id_member);
+        $member->deposit_kelas = 0;
+        
+        $depositKelas->save();
+        $member->save();
+            return response([
+                'message' => 'Reset Deposit Kelas Success',
+                'data' => $depositKelas
+            ], 200);
+    }
+
+    public function showExpired() {
+        
+        $depositKelas = DB::table('transaksi_deposit_kelas')
+        ->join('member', 'transaksi_deposit_kelas.id_member', '=', 'member.id_member')
+        ->join('pegawai','transaksi_deposit_kelas.id_kasir', '=', 'pegawai.id_pegawai')
+        ->join('promo','transaksi_deposit_kelas.id_promo', '=', 'promo.id')
+        ->join('kelas','transaksi_deposit_kelas.id_kelas', '=', 'kelas.id_kelas')
+        ->select('transaksi_deposit_kelas.*', 'member.nama_member', 'pegawai.nama_pegawai', 'kelas.nama_kelas')
+        ->where('transaksi_deposit_kelas.masa_berlaku', '=', date('Y-m-d'))
+        ->where('transaksi_deposit_kelas.status', '=', '0')
+        ->get();
+
+        if(count($depositKelas) > 0){
+            return response([
+                'message' => 'Retrieve All Today Expired Transaction',
+                'data' => $depositKelas
+            ], 200);
+        }
+        return response([
+            'message' => 'No Expired Transaction Today',
+            'data' => null
+        ], 400);
+
+
+        
+    }
     /**
      * Update the specified resource in storage.
      *

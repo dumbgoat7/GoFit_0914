@@ -18,5 +18,6 @@ class IjinInstruktur extends Model
         'tanggal_pembuatan_ijin',
         'tanggal_ijin',
         'keterangan',
+        'status'
     ];
 }

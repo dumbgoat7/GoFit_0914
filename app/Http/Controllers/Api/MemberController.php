@@ -18,7 +18,10 @@ class MemberController extends Controller
      */
     public function index()
     {
-        $member = Member::all();
+        $member = DB::table('member')
+            ->select('member.*')
+            ->orderByRaw('CAST(id_member as INTEGER) DESC')
+            ->get();
 
         if(count($member) > 0){
             return response([
@@ -47,7 +50,6 @@ class MemberController extends Controller
             'nama_member' => 'required|max:60',
             'alamat_member' => 'required',
             'no_telp' => 'required|max:13',
-            'deposit_member' => 'required|numeric',
             'email_member' => 'required|email:rfc,dns',
             'tanggal_lahir' => 'required|date_format:Y-m-d',
             'username' => 'required',
@@ -61,6 +63,8 @@ class MemberController extends Controller
         $date = Carbon::now()->format('y.m');
         $storeData['id_member'] = $date.'.'.$generate;
         $storeData['password'] = bcrypt($request->password);
+        $storeData['deposit_member'] = 0;
+        $storeData['deposit_kelas'] = 0;
         $storeData['status'] = '0';
         $storeData['masa_berlaku'] = null;
         $member = Member::create($storeData);
@@ -115,6 +119,7 @@ class MemberController extends Controller
             'alamat_member' => 'required',
             'no_telp' => 'required|max:13',
             'deposit_member' => 'required|numeric',
+            'deposit_kelas' => 'required|numeric',
             'email_member' => 'required|email:rfc,dns',
             'tanggal_lahir' => 'required|date_format:Y-m-d',
         ]);
@@ -126,6 +131,7 @@ class MemberController extends Controller
         $member->alamat_member = $updateData['alamat_member'];
         $member->no_telp = $updateData['no_telp'];
         $member->deposit_member = $updateData['deposit_member'];
+        $member->deposit_kelas = $updateData['deposit_kelas'];
         $member->email_member = $updateData['email_member'];
         $member->tanggal_lahir = $updateData['tanggal_lahir'];
         if($member->save()){
@@ -194,12 +200,35 @@ class MemberController extends Controller
         ], 400);
     }
 
+    public function getDeactiveMember() {
+        $member = DB::table('member')
+            ->where('status', '=', '0')
+            ->where('masa_berlaku', '=', date('Y-m-d'))
+            ->get();
+        if(count($member) > 0){
+            return response([
+                'message' => 'This Member is Deactived Today',
+                'data' => $member
+            ], 200);
+        }
+        return response([
+            'message' => 'No Member Deactived Today',
+            'data' => null
+        ], 400);
+    }
+
     public function deactiveMember($id) {
         $member = Member::find($id);
 
         if(is_null($member)){
             return response([
                 'message' => 'Member Not Found',
+                'data' => null
+            ],404);
+        }
+        if($member->masa_berlaku > date('Y-m-d')) {
+            return response([
+                'message' => 'Member is still Active',
                 'data' => null
             ],404);
         }
