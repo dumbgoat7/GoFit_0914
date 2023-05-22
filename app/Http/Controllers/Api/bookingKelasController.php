@@ -26,8 +26,10 @@ class bookingKelasController extends Controller
             ->join('member', 'booking_kelas.id_member', '=', 'member.id_member')
             ->join('jadwal_harian', 'booking_kelas.id_jadwal', '=', 'jadwal_harian.id')
             ->join('jadwal_umum', 'jadwal_harian.id_jadwal_umum', '=', 'jadwal_umum.id_jadwal')
+            ->join('instruktur', 'jadwal_harian.id_instruktur', '=', 'instruktur.id')
             ->join('kelas', 'jadwal_umum.id_kelas', '=', 'kelas.id_kelas')
-            ->select('booking_kelas.*', 'member.nama_member', 'kelas.nama_kelas', 'jadwal_umum.jam_mulai', 'jadwal_umum.hari')
+            ->select('booking_kelas.*', 'member.nama_member', 'member.deposit_member',
+             'kelas.nama_kelas', 'kelas.harga', 'instruktur.nama_instruktur', 'jadwal_umum.jam_mulai', 'jadwal_umum.hari')
             ->get();
         
         if(count($booking) > 0){
@@ -42,6 +44,54 @@ class bookingKelasController extends Controller
         ], 400);
     }
 
+    public function getDatabookingKelas($id){
+        $booking = DB::table('booking_kelas')
+        ->join('member', 'booking_kelas.id_member', '=', 'member.id_member')
+        ->join('jadwal_harian', 'booking_kelas.id_jadwal', '=', 'jadwal_harian.id')
+        ->join('jadwal_umum', 'jadwal_harian.id_jadwal_umum', '=', 'jadwal_umum.id_jadwal')
+        ->join('instruktur', 'jadwal_harian.id_instruktur', '=', 'instruktur.id')
+        ->join('kelas', 'jadwal_umum.id_kelas', '=', 'kelas.id_kelas')
+        ->select('booking_kelas.*', 'member.nama_member', 'member.deposit_member',
+         'kelas.nama_kelas', 'kelas.harga', 'instruktur.nama_instruktur', 'jadwal_umum.jam_mulai', 'jadwal_umum.hari')
+        ->where('booking_kelas.metode_pembayaran', '=', 0)
+        ->where('booking_kelas.id', '=', $id)
+        ->get();
+        if(count($booking) > 0){
+            return response([
+                'message' => 'Retrieve All Success',
+                'data' => $booking
+            ], 200);
+        }
+        return response([
+            'message' => 'Empty',
+            'data' => null
+        ], 400);
+    }
+
+    public function getDatabookingKelasPaket($id){
+        $booking = DB::table('booking_kelas')
+        ->join('member', 'booking_kelas.id_member', '=', 'member.id_member')
+        ->join('jadwal_harian', 'booking_kelas.id_jadwal', '=', 'jadwal_harian.id')
+        ->join('jadwal_umum', 'jadwal_harian.id_jadwal_umum', '=', 'jadwal_umum.id_jadwal')
+        ->join('instruktur', 'jadwal_harian.id_instruktur', '=', 'instruktur.id')
+        ->join('kelas', 'jadwal_umum.id_kelas', '=', 'kelas.id_kelas')
+        ->join('transaksi_deposit_kelas', 'booking_kelas.id_member', '=', 'transaksi_deposit_kelas.id_member')
+        ->select('booking_kelas.*', 'member.nama_member', 'member.deposit_member',
+         'kelas.nama_kelas', 'kelas.harga', 'instruktur.nama_instruktur', 'transaksi_deposit_kelas.deposit_kelas', 'transaksi_deposit_kelas.masa_berlaku')
+        ->where('booking_kelas.metode_pembayaran', '=', 1)
+        ->where('booking_kelas.id', '=', $id)
+        ->get();
+        if(count($booking) > 0){
+            return response([
+                'message' => 'Retrieve All Success',
+                'data' => $booking
+            ], 200);
+        }
+        return response([
+            'message' => 'Empty',
+            'data' => null
+        ], 400);
+    }
     /**
      * Store a newly created resource in storage.
      *
@@ -110,7 +160,7 @@ class bookingKelasController extends Controller
         $depositKelas = DepositKelas::where('id_member', '=', $storeData['id_member'])
             ->where('id_kelas', '=', $kelas->id_kelas)
             ->first();
-        var_dump($depositKelas);
+        // var_dump($depositKelas);
 
 
         // 0 = regular, 1 = class bundle
@@ -126,7 +176,7 @@ class bookingKelasController extends Controller
         } else {
             if(is_null($depositKelas)){
                 return response([
-                    'message' => 'You have not purchased a class bundle',
+                    'message' => 'You have not purchased this class bundle',
                     'data' => null
                 ], 400);
             } else {
@@ -154,14 +204,65 @@ class bookingKelasController extends Controller
         $storeData['tanggal_pembuatan_booking'] = date('Y-m-d');
         $storeData['tanggal_booking'] = $jadwalharian->tanggal;
         $storeData['status_booking'] = 'BOOKING';
+        $storeData['status_presensi'] = 0;
         $storeData['tanggal_presensi'] = null;
         $booking = bookingKelas::create($storeData);
         return response([
-            'message' => 'Booking Inputed Successfully',
+            'message' => 'Booking Successfully',
             'data' => $booking,
         ], 200);
     }
 
+    public function presensi($id){
+        $bookingKelas = bookingKelas::find($id);
+
+        $checkMember = Member::find($bookingKelas->id_member);
+        $jadwalHarian = JadwalHarian::find($bookingKelas->id_jadwal);
+        $jadwalUmum = JadwalUmum::find($jadwalHarian->id_jadwal_umum);
+        $kelas = Kelas::find($jadwalUmum->id_kelas);
+
+        $jadwalHarian->kapasitas = $jadwalHarian->kapasitas + 1;
+        $jadwalHarian->save();
+       
+        if($bookingKelas->metode_pembayaran == 0){
+            $checkMember->deposit_member = $checkMember->deposit_member - $kelas->harga;
+            $checkMember->save();
+        } else {
+            $depositKelas = DepositKelas::where('id_member', '=', $bookingKelas->id_member)
+                ->where('id_kelas', '=', $kelas->id_kelas)
+                ->first();
+            $depositKelas->deposit_kelas = $depositKelas->deposit_kelas - 1;
+            $checkMember->deposit_kelas = $checkMember->deposit_kelas - $kelas->harga;        
+            $depositKelas->save();
+        }
+
+        $bookingKelas->status_booking = 'COMPLETE';
+        $bookingKelas->status_presensi = 1;
+        $bookingKelas->tanggal_presensi = date('Y-m-d H:i:s');
+        $bookingKelas->save();
+        return response([
+            'message' => 'Your Attandance Has Been Recorded',
+            'data' => $bookingKelas,
+        ], 200);
+        
+
+    }
+
+    public function memberListClass($id){
+        $bookingKelas = DB::table('booking_kelas')
+            ->join('member', 'booking_kelas.id_member', '=', 'member.id_member')
+            ->join('jadwal_harian', 'booking_kelas.id_jadwal', '=', 'jadwal_harian.id')
+            ->join('jadwal_umum', 'jadwal_harian.id_jadwal_umum', '=', 'jadwal_umum.id_jadwal')
+            ->join('kelas', 'jadwal_umum.id_kelas', '=', 'kelas.id_kelas')
+            ->select('booking_kelas.*', 'member.nama_member', 'kelas.nama_kelas', 'jadwal_umum.jam_mulai', 'jadwal_umum.hari')
+            ->where('booking_kelas.id_jadwal', '=', $id)
+            ->get();
+        
+            return response([
+                'message' => 'Retrieve All Success',
+                'data' => $bookingKelas
+            ], 200);
+    }
     /**
      * Display the specified resource.
      *

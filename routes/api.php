@@ -70,5 +70,13 @@ Route::group(['middleware' => 'auth:PegawaiPage'], function(){
     Route::put('/ijin/isConfirmed/{id}', [App\Http\Controllers\Api\IjinController::class, 'isConfirmed']);
 
     Route::apiResource("/bookingKelas", App\Http\Controllers\Api\bookingKelasController::class);
+    Route::put('/presensi/{id}', [App\Http\Controllers\Api\bookingKelasController::class, 'presensi']);
+    Route::get('/getDatabookingKelas/{id}',[App\Http\Controllers\Api\bookingKelasController::class, 'getDatabookingKelas']);
+    Route::get('/getDatabookingKelasPaket/{id}',[App\Http\Controllers\Api\bookingKelasController::class, 'getDatabookingKelasPaket']);
+
+    
+    Route::get('/memberList/{id}', [App\Http\Controllers\Api\bookingKelasController::class, 'memberListClass']);
+    Route::apiResource("/bookingGym", App\Http\Controllers\Api\bookingGymController::class);
+    Route::put('/presensiGym/{id}', [App\Http\Controllers\Api\bookingGymController::class, 'presensiGym']);
 
 });
