@@ -292,6 +292,27 @@ class bookingKelasController extends Controller
         ], 200);
     }
 
+    public function showBookingKelasMember($id) {
+        $bookingkelas = DB::table('booking_kelas')
+            ->join('member', 'booking_kelas.id_member', '=', 'member.id_member')
+            ->join('jadwal_harian', 'booking_kelas.id_jadwal', '=', 'jadwal_harian.id')
+            ->join('jadwal_umum', 'jadwal_harian.id_jadwal_umum', '=', 'jadwal_umum.id_jadwal')
+            ->join('kelas', 'jadwal_umum.id_kelas', '=', 'kelas.id_kelas')
+            ->select('booking_kelas.*', 'member.nama_member', 'kelas.nama_kelas', 'jadwal_umum.jam_mulai', 'jadwal_umum.hari')
+            ->where('booking_kelas.id_member', '=', $id)
+            ->get();
+
+        if(count($bookingkelas) == 0){
+            return response([
+                'message' => 'Member has not booked any class',
+                'data' => null
+            ], 404);
+        }
+        return response([
+            'message' => 'Retrieve Booking Success',
+            'data' => $bookingkelas
+        ], 200);
+    }
     /**
      * Update the specified resource in storage.
      *

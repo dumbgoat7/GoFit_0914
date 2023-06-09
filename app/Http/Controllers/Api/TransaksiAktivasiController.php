@@ -92,6 +92,25 @@ class TransaksiAktivasiController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+
+    public function showActivationMember($id){
+        $aktivasi = DB::table('transaksi_aktivasi')
+                    ->select('transaksi_aktivasi.*')
+                    ->where('id_member', $id)
+                    ->get();
+        
+        if(count($aktivasi) > 0){
+            return response([
+                'message' => 'Retrieve All Success',
+                'data' => $aktivasi
+            ], 200);
+        }
+        return response([
+            'message' => 'Empty',
+            'data' => null
+        ], 400);
+    }
+
     public function show($id)
     {
         $transaksiAktivasi = TransaksiAktivasi::with(['Pegawai', 'Member'])->where('no_struk_akt', $id)->first();

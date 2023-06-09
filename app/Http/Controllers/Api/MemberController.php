@@ -267,4 +267,54 @@ class MemberController extends Controller
             'data' => null
         ], 400);
     }
+
+    
+
+    public function showActivityMember($id) {
+        $activity = DB::table('transaksi_aktivasi')
+                   ->select('transaksi_aktivasi.*')
+                     ->where('id_member', '=', $id)
+                        ->get();
+        
+        $activity = $activity->concat(DB::table('transaksi_deposit_kelas')
+                   ->select('transaksi_deposit_kelas.*')
+                     ->where('id_member', '=', $id)
+                        ->get()
+                    );
+
+        $activity = $activity->concat(DB::table('transaksi_deposit_reguler')
+                   ->select('transaksi_deposit_reguler.*')
+                     ->where('id_member', '=', $id)
+                        ->get()
+                    );
+        
+        $activity = $activity->concat(DB::table('booking_kelas')
+                   ->select('booking_kelas.*')
+                     ->where('id_member', '=', $id)
+                        ->get()
+                    );
+
+        $activity = $activity->concat(DB::table('booking_gym')
+                    ->join('details_booking_gym', 'booking_gym.id_details_booking', '=', 'details_booking_gym.id')
+                    ->select('booking_gym.*', 'details_booking_gym.slot_waktu as slot_waktu')
+                    ->where('id_member', '=', $id)
+                        ->get()
+                    );
+        
+        $sortedActivity = $activity->sortBy(function ($item) {
+            if (isset($item->tanggal_transaksi)) {
+                return $item->tanggal_transaksi;
+            } elseif (isset($item->tanggal_pembuatan_booking)) {
+                return $item->tanggal_pembuatan_booking;
+            }
+        });
+
+        return response([
+            'message' => 'Retrieve All Activity Success',
+            'data' => $sortedActivity
+        ], 200);
+    }
+
+
+
 }

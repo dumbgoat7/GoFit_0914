@@ -30,6 +30,8 @@ Route::put('/resetPasswordIns/{username}', [App\Http\Controllers\Api\InstrukturC
 Route::put('/resetPasswordMO/{username}', [App\Http\Controllers\Api\PegawaiController::class, 'resetPassword']);
 // Route::middleware('auth:api')->post('/logout', [App\Http\Controllers\Api\AuthController::class, 'logout']);
 
+Route::apiResource("/jadwalHarianforall", App\Http\Controllers\Api\JadwalHarianController::class);
+
 Route::group(['middleware' => 'auth:PegawaiPage'], function(){
     Route::apiResource('/member', App\Http\Controllers\Api\MemberController::class);
     Route::put('/member/resetPassword/{id}', [App\Http\Controllers\Api\MemberController::class, 'resetPassword']);
@@ -73,10 +75,41 @@ Route::group(['middleware' => 'auth:PegawaiPage'], function(){
     Route::put('/presensi/{id}', [App\Http\Controllers\Api\bookingKelasController::class, 'presensi']);
     Route::get('/getDatabookingKelas/{id}',[App\Http\Controllers\Api\bookingKelasController::class, 'getDatabookingKelas']);
     Route::get('/getDatabookingKelasPaket/{id}',[App\Http\Controllers\Api\bookingKelasController::class, 'getDatabookingKelasPaket']);
+    
+    Route::apiResource("/bookingGymPegawai", App\Http\Controllers\Api\bookingGymController::class);
+    Route::put('/presensiGym/{id}', [App\Http\Controllers\Api\bookingGymController::class, 'presensiGym']);
+
+    Route::apiResource("/detailsBooking", App\Http\Controllers\Api\detailsBookingController::class);
+
+    Route::apiResource("/presensiInstruktur", App\Http\Controllers\Api\presensiInstrukturController::class);
+    Route::get('/showActivityMember/{id}', [App\Http\Controllers\Api\MemberController::class, 'showActivityMember']);
+
+    Route::get('/laporanGym/{bulan}', [App\Http\Controllers\Api\LaporanController::class, 'laporanGym']);
+    Route::get('/laporanGymThisMonth', [App\Http\Controllers\Api\LaporanController::class, 'laporanGymThisMonth']);
+
+});
+
+Route::group(['middleware' => 'auth:MemberPage'], function(){
+    Route::apiResource('/membermobile', App\Http\Controllers\Api\MemberController::class);
+    
+    Route::apiResource("/bookingGym", App\Http\Controllers\Api\bookingGymController::class);
+    Route::get('/showbookingbyMember/{id}', [App\Http\Controllers\Api\bookingGymController::class, 'showbyMember']);
+    Route::put('/cancelBooking/{id}', [App\Http\Controllers\Api\bookingGymController::class, 'cancelBooking']);
+
+    Route::apiResource("/detailsBooking", App\Http\Controllers\Api\detailsBookingController::class);
+
+    Route::get('/showDepositRegulerMember/{id}', [App\Http\Controllers\Api\DepositRegulerController::class, 'showDepositRegulerMember']);
 
     
-    Route::get('/memberList/{id}', [App\Http\Controllers\Api\bookingKelasController::class, 'memberListClass']);
-    Route::apiResource("/bookingGym", App\Http\Controllers\Api\bookingGymController::class);
-    Route::put('/presensiGym/{id}', [App\Http\Controllers\Api\bookingGymController::class, 'presensiGym']);
+    Route::get('/showActiveDepositKelasMember/{id}', [App\Http\Controllers\Api\DepositKelasController::class, 'showActiveDepositKelasMember']);
+    Route::get('/showDepositKelasMember/{id}', [App\Http\Controllers\Api\DepositKelasController::class, 'showDepositKelasMember']);
+    Route::get('/showActivationMember/{id}', [App\Http\Controllers\Api\TransaksiAktivasiController::class, 'showActivationMember']);
+    
+    Route::get('/showBookingKelasMember/{id}', [App\Http\Controllers\Api\bookingKelasController::class, 'showBookingKelasMember']);
+    
+    Route::get('/showBookingbyMember/{id}', [App\Http\Controllers\Api\bookingGymController::class, 'showbyMember']);
+});
+
+Route::group(['middleware' => 'auth:InstrukturPage'], function(){
 
 });

@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
+use App\Models\Member;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Session;
 
@@ -55,7 +57,17 @@ class AuthController extends Controller
         if (!Auth::guard('member')->attempt($loginData)) {
             return response(['message'=> 'This username and password is not a member'],401);
         }
+        $member = DB::table('member')
+            ->select('member.*')
+            ->where('member.username', $request->username)
+            ->where('member.password', $request->password)
+            ->where('member.status','=', 0)
+            ->first();
+               
         $user = Auth::guard('member')->user();
+        if($user->status == 0){
+            return response(['message'=> 'This member is not active'],401);
+        }
         $token = $user->createToken('Authentication Token')->accessToken;
 
         return response([

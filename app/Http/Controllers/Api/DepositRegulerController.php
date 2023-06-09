@@ -99,7 +99,7 @@ class DepositRegulerController extends Controller
      */
     public function show($id)
     {
-        $depositReguler = DepositReguler::with(['Member', 'Pegawai', 'Promo'])->where('id_transaksi_deposit_reguler', $id)->first();
+        $depositReguler = DepositReguler::with(['Member', 'Pegawai', 'Promo'])->where('no_struk', $id)->first();
         if (!is_null($depositReguler)) {
             return response([
                 'message' => 'Retrieve Deposit Reguler Success',
@@ -112,6 +112,28 @@ class DepositRegulerController extends Controller
         ], 404);
     }
 
+    public function showDepositRegulerMember($id)
+    {
+        $depositReguler = DB::table('transaksi_deposit_reguler')
+            ->join('member', 'transaksi_deposit_reguler.id_member', '=', 'member.id_member')
+            ->join('pegawai', 'transaksi_deposit_reguler.id_kasir', '=', 'pegawai.id_pegawai')
+            ->join('promo', 'transaksi_deposit_reguler.id_promo', '=', 'promo.id')
+            ->select('transaksi_deposit_reguler.*', 'member.nama_member', 'member.deposit_member','pegawai.nama_pegawai', 'promo.nama_promo' )
+            ->where('transaksi_deposit_reguler.id_member', '=', $id)
+            ->get();
+
+        if (!is_null($depositReguler)) {
+            return response([
+                'message' => 'Retrieve Deposit Reguler Success',
+                'data' => $depositReguler
+            ], 200);
+        }
+        return response([
+            'message' => 'You have not made a regular deposit yet',
+            'data' => null
+        ], 404);
+    }
+    
     /**
      * Update the specified resource in storage.
      *

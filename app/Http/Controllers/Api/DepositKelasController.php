@@ -175,10 +175,55 @@ class DepositKelasController extends Controller
         return response([
             'message' => 'No Expired Transaction Today',
             'data' => null
-        ], 400);
+        ], 200);
 
 
         
+    }
+
+    public function showDepositKelasMember($id){
+        $depositKelas = DB::table('transaksi_deposit_kelas')
+        ->join('member', 'transaksi_deposit_kelas.id_member', '=', 'member.id_member')
+        ->join('pegawai','transaksi_deposit_kelas.id_kasir', '=', 'pegawai.id_pegawai')
+        ->join('promo','transaksi_deposit_kelas.id_promo', '=', 'promo.id')
+        ->join('kelas','transaksi_deposit_kelas.id_kelas', '=', 'kelas.id_kelas')
+        ->select('transaksi_deposit_kelas.*', 'member.nama_member', 'pegawai.nama_pegawai', 'kelas.nama_kelas')
+        ->where('transaksi_deposit_kelas.id_member', '=', $id)
+        ->get();
+
+        if(count($depositKelas) > 0){
+            return response([
+                'message' => 'Retrieve Class Deposit Member Success',
+                'data' => $depositKelas
+            ], 200);
+        }
+        return response([
+            'message' => 'You have not made a class deposit yet',
+            'data' => null
+        ], 400);
+    }
+
+    public function showActiveDepositKelasMember($id){
+        $depositKelas = DB::table('transaksi_deposit_kelas')
+        ->join('member', 'transaksi_deposit_kelas.id_member', '=', 'member.id_member')
+        ->join('pegawai','transaksi_deposit_kelas.id_kasir', '=', 'pegawai.id_pegawai')
+        ->join('promo','transaksi_deposit_kelas.id_promo', '=', 'promo.id')
+        ->join('kelas','transaksi_deposit_kelas.id_kelas', '=', 'kelas.id_kelas')
+        ->select('transaksi_deposit_kelas.*', 'member.nama_member', 'pegawai.nama_pegawai', 'kelas.nama_kelas')
+        ->where('transaksi_deposit_kelas.id_member', '=', $id)
+        ->where('transaksi_deposit_kelas.status', '=', '1')
+        ->get();
+
+        if(count($depositKelas) > 0){
+            return response([
+                'message' => 'Retrieve Class Deposit Member Success',
+                'data' => $depositKelas
+            ], 200);
+        }
+        return response([
+            'message' => 'You have not made a class deposit yet',
+            'data' => null
+        ], 200);
     }
     /**
      * Update the specified resource in storage.

@@ -116,6 +116,53 @@ class bookingGymController extends Controller
      * @return \Illuminate\Http\Response
      */
     
+    public function cancelBooking($id) {
+        $bookingGym = BookingGym::find($id);
+
+        $today = Carbon::now()->format('Y-m-d');
+        $todayDate = Carbon::parse($today);
+        $bookingDate = Carbon::parse($bookingGym->tanggal_booking);
+        $diff = $todayDate->diffInDays($bookingDate);
+        if($diff == 1) {
+            return response([
+                'message' => 'You cannot cancel your booking',
+                'data' => null
+            ], 400);
+        }
+        $bookingGym->status_booking = 'CANCELLED';
+        $details = detailsBooking::find($bookingGym->id_details_booking);
+        $details->sisa_kapasitas = $details->sisa_kapasitas + 1;
+        $details->save();
+        $bookingGym->delete();
+        return response([
+            'message' => 'Your Booking has Successfully Cancelled',
+            'data' => $bookingGym,
+        ], 200);
+    }
+
+
+    
+    public function showbyMember($id){
+        $bookingGym = DB::table('booking_gym')
+            ->join('member', 'booking_gym.id_member', '=', 'member.id_member')
+            ->join('details_booking_gym', 'booking_gym.id_details_booking', '=', 'details_booking_gym.id')
+            ->select('booking_gym.*', 'member.nama_member', 'details_booking_gym.slot_waktu')
+            ->where('booking_gym.id_member', '=', $id)
+            ->get();
+        
+            if(count($bookingGym) > 0){
+                return response([
+                    'message' => 'Retrieve All Success',
+                    'data' => $bookingGym
+                ], 200);
+            }
+            return response([
+                'message' => 'No Booking',
+                'data' => null
+            ], 400);
+    }
+
+
     public function showbyDates($date){
         $bookingGym = DB::table('booking_gym')
             ->join('member', 'booking_gym.id_member', '=', 'member.id_member')

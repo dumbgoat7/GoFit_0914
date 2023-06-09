@@ -21,6 +21,16 @@ class JadwalHarianController extends Controller
                         ->join('kelas', 'jadwal_umum.id_kelas', '=', 'kelas.id_kelas')
                         ->join('instruktur', 'jadwal_harian.id_instruktur', '=', 'instruktur.id')
                         ->select('jadwal_harian.*', 'jadwal_umum.sesi_jadwal', 'jadwal_umum.hari', 'jadwal_umum.jam_mulai', 'kelas.nama_kelas', 'instruktur.nama_instruktur')
+                        ->orderByRaw("CASE 
+                            WHEN jadwal_umum.hari = 'Monday' THEN 1 
+                            WHEN jadwal_umum.hari = 'Tuesday' THEN 2 
+                            WHEN jadwal_umum.hari = 'Wednesday' THEN 3 
+                            WHEN jadwal_umum.hari = 'Thursday' THEN 4 
+                            WHEN jadwal_umum.hari = 'Friday' THEN 5 
+                            WHEN jadwal_umum.hari = 'Saturday' THEN 6 
+                            WHEN jadwal_umum.hari = 'Sunday' THEN 7 
+                            ELSE 8 
+                        END")
                         ->get();
 
         if(count($jadwalHarian) > 0){
