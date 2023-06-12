@@ -7,6 +7,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\JadwalHarian;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
+use App\Models\JadwalUmum;
+
 class JadwalHarianController extends Controller
 {
     /**
@@ -47,6 +50,9 @@ class JadwalHarianController extends Controller
     }
 
     public function jadwalHarianMonday() {
+        $startDate = Carbon::now()->startOfWeek(); // Get the start date of the current week (Monday)
+        $endDate = $startDate->copy()->addDays(6); // Get the end date of the current week (Sunday)
+
         $jadwalHarianMonday = DB::table('jadwal_harian')
                         ->join('jadwal_umum', 'jadwal_harian.id_jadwal_umum', '=', 'jadwal_umum.id_jadwal')
                         ->join('kelas', 'jadwal_umum.id_kelas', '=', 'kelas.id_kelas')
@@ -54,6 +60,7 @@ class JadwalHarianController extends Controller
                         ->select('jadwal_harian.*','jadwal_harian.id_jadwal_umum', 'jadwal_umum.sesi_jadwal', 'jadwal_umum.hari', 
                         'jadwal_umum.jam_mulai', 'jadwal_umum.id_kelas', 'kelas.nama_kelas', 'instruktur.nama_instruktur')
                         ->where('jadwal_umum.hari', '=', 'Monday')
+                        ->whereBetween('jadwal_harian.tanggal', [$startDate,$endDate])
                         ->orderBy('jadwal_umum.jam_mulai', 'asc')
                         ->get();
 
@@ -70,6 +77,9 @@ class JadwalHarianController extends Controller
     }
 
     public function jadwalHarianTuesday() {
+        $startDate = Carbon::now()->startOfWeek(); // Get the start date of the current week (Monday)
+        $endDate = $startDate->copy()->addDays(6);
+
         $jadwalHarianTuesday = DB::table('jadwal_harian')
                         ->join('jadwal_umum', 'jadwal_harian.id_jadwal_umum', '=', 'jadwal_umum.id_jadwal')
                         ->join('kelas', 'jadwal_umum.id_kelas', '=', 'kelas.id_kelas')
@@ -77,6 +87,7 @@ class JadwalHarianController extends Controller
                         ->select('jadwal_harian.*','jadwal_harian.id_jadwal_umum', 'jadwal_umum.sesi_jadwal', 'jadwal_umum.hari', 
                         'jadwal_umum.jam_mulai', 'jadwal_umum.id_kelas', 'kelas.nama_kelas', 'instruktur.nama_instruktur')
                         ->where('jadwal_umum.hari', '=', 'Tuesday')
+                        ->whereBetween('jadwal_harian.tanggal', [$startDate,$endDate])
                         ->orderby('jadwal_umum.jam_mulai', 'asc')
                         ->get();
 
@@ -93,6 +104,9 @@ class JadwalHarianController extends Controller
     }
 
     public function jadwalHarianWednesday() {
+        $startDate = Carbon::now()->startOfWeek(); // Get the start date of the current week (Monday)
+        $endDate = $startDate->copy()->addDays(6);
+
         $jadwalHarianWednesday = DB::table('jadwal_harian')
                         ->join('jadwal_umum', 'jadwal_harian.id_jadwal_umum', '=', 'jadwal_umum.id_jadwal')
                         ->join('kelas', 'jadwal_umum.id_kelas', '=', 'kelas.id_kelas')
@@ -100,6 +114,7 @@ class JadwalHarianController extends Controller
                         ->select('jadwal_harian.*','jadwal_harian.id_jadwal_umum', 'jadwal_umum.sesi_jadwal', 'jadwal_umum.hari', 
                         'jadwal_umum.jam_mulai', 'jadwal_umum.id_kelas', 'kelas.nama_kelas', 'instruktur.nama_instruktur')
                         ->where('jadwal_umum.hari', '=', 'Wednesday')
+                        ->whereBetween('jadwal_harian.tanggal', [$startDate,$endDate])
                         ->orderby('jadwal_umum.jam_mulai', 'asc')
                         ->get();
 
@@ -116,6 +131,9 @@ class JadwalHarianController extends Controller
     }
 
     public function jadwalHarianThursday() {
+        $startDate = Carbon::now()->startOfWeek(); // Get the start date of the current week (Monday)
+        $endDate = $startDate->copy()->addDays(6);
+
         $jadwalHarianThursday = DB::table('jadwal_harian')
                         ->join('jadwal_umum', 'jadwal_harian.id_jadwal_umum', '=', 'jadwal_umum.id_jadwal')
                         ->join('kelas', 'jadwal_umum.id_kelas', '=', 'kelas.id_kelas')
@@ -123,6 +141,7 @@ class JadwalHarianController extends Controller
                         ->select('jadwal_harian.*','jadwal_harian.id_jadwal_umum', 'jadwal_umum.sesi_jadwal', 'jadwal_umum.hari', 
                         'jadwal_umum.jam_mulai', 'jadwal_umum.id_kelas', 'kelas.nama_kelas', 'instruktur.nama_instruktur')
                         ->where('jadwal_umum.hari', '=', 'Thursday')
+                        ->whereBetween('jadwal_harian.tanggal', [$startDate,$endDate])
                         ->orderby('jadwal_umum.jam_mulai', 'asc')
                         ->get();
 
@@ -139,6 +158,9 @@ class JadwalHarianController extends Controller
     }
 
     public function jadwalHarianFriday() {
+        $startDate = Carbon::now()->startOfWeek(); // Get the start date of the current week (Monday)
+        $endDate = $startDate->copy()->addDays(6);
+
         $jadwalHarianFriday = DB::table('jadwal_harian')
                         ->join('jadwal_umum', 'jadwal_harian.id_jadwal_umum', '=', 'jadwal_umum.id_jadwal')
                         ->join('kelas', 'jadwal_umum.id_kelas', '=', 'kelas.id_kelas')
@@ -146,6 +168,7 @@ class JadwalHarianController extends Controller
                         ->select('jadwal_harian.*','jadwal_harian.id_jadwal_umum', 'jadwal_umum.sesi_jadwal', 'jadwal_umum.hari',
                         'jadwal_umum.jam_mulai', 'jadwal_umum.id_kelas', 'kelas.nama_kelas', 'instruktur.nama_instruktur')
                         ->where('jadwal_umum.hari', '=', 'Friday')
+                        ->whereBetween('jadwal_harian.tanggal', [$startDate,$endDate])
                         ->orderby('jadwal_umum.jam_mulai', 'asc')
                         ->get();
 
@@ -162,6 +185,9 @@ class JadwalHarianController extends Controller
     }
 
     public function jadwalHarianSaturday() {
+        $startDate = Carbon::now()->startOfWeek(); // Get the start date of the current week (Monday)
+        $endDate = $startDate->copy()->addDays(6);
+
         $jadwalHarianSaturday = DB::table('jadwal_harian')
                         ->join('jadwal_umum', 'jadwal_harian.id_jadwal_umum', '=', 'jadwal_umum.id_jadwal')
                         ->join('kelas', 'jadwal_umum.id_kelas', '=', 'kelas.id_kelas')
@@ -169,6 +195,7 @@ class JadwalHarianController extends Controller
                         ->select('jadwal_harian.*','jadwal_harian.id_jadwal_umum', 'jadwal_umum.sesi_jadwal', 'jadwal_umum.hari',
                         'jadwal_umum.jam_mulai', 'jadwal_umum.id_kelas', 'kelas.nama_kelas', 'instruktur.nama_instruktur')
                         ->where('jadwal_umum.hari', '=', 'Saturday')
+                        ->whereBetween('jadwal_harian.tanggal', [$startDate,$endDate])
                         ->orderby('jadwal_umum.jam_mulai', 'asc')
                         ->get();
 
@@ -185,6 +212,9 @@ class JadwalHarianController extends Controller
     }
 
     public function jadwalHarianSunday() {
+        $startDate = Carbon::now()->startOfWeek(); // Get the start date of the current week (Monday)
+        $endDate = $startDate->copy()->addDays(6); // Get the end date of the current week (Sunday)
+
         $jadwalHarianSunday = DB::table('jadwal_harian')
                         ->join('jadwal_umum', 'jadwal_harian.id_jadwal_umum', '=', 'jadwal_umum.id_jadwal')
                         ->join('kelas', 'jadwal_umum.id_kelas', '=', 'kelas.id_kelas')
@@ -192,6 +222,7 @@ class JadwalHarianController extends Controller
                         ->select('jadwal_harian.*','jadwal_harian.id_jadwal_umum', 'jadwal_umum.sesi_jadwal', 'jadwal_umum.hari', 
                         'jadwal_umum.jam_mulai', 'jadwal_umum.id_kelas', 'kelas.nama_kelas', 'instruktur.nama_instruktur')
                         ->where('jadwal_umum.hari', '=', 'Sunday')
+                        ->whereBetween('jadwal_harian.tanggal', [$startDate,$endDate])
                         ->orderby('jadwal_umum.jam_mulai', 'asc')
                         ->get();
 
@@ -208,6 +239,8 @@ class JadwalHarianController extends Controller
     }
 
     public function search($class) {
+        $startDate = Carbon::now()->startOfWeek(); // Get the start date of the current week (Monday)
+
         $jadwalHarian = DB::table('jadwal_harian')
                         ->join('jadwal_umum', 'jadwal_harian.id_jadwal_umum', '=', 'jadwal_umum.id_jadwal')
                         ->join('kelas', 'jadwal_umum.id_kelas', '=', 'kelas.id_kelas')
@@ -215,6 +248,7 @@ class JadwalHarianController extends Controller
                         ->select('jadwal_harian.*','jadwal_harian.id_jadwal_umum', 'jadwal_umum.sesi_jadwal', 'jadwal_umum.hari','jadwal_umum.jam_mulai', 
                         'jadwal_umum.id_kelas', 'kelas.nama_kelas', 'instruktur.nama_instruktur')
                         ->where('kelas.nama_kelas', 'like', '%'.$class.'%')
+                        ->where('jadwal_harian.tanggal', '>=', $startDate)
                         ->get();
 
         if(count($jadwalHarian) > 0){
@@ -306,5 +340,51 @@ class JadwalHarianController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+
+    public function generateJadwal(){
+        $startDate = Carbon::now()->startOfWeek()->addWeek(); // Get the start date of the current week (Monday)
+        $endDate = $startDate->copy()->addDays(6); // Get the end date of the current week (Sunday)
+
+        $jadwalUmumIds = JadwalUmum::pluck('id_jadwal')->all();
+
+        $jadwalHarians = [];
+        $currentDate = $startDate->copy();
+
+        while($currentDate <= $endDate) {
+
+            foreach($jadwalUmumIds as $jadwalUmumId) {
+                $jadwalUmum = JadwalUmum::find($jadwalUmumId);
+                if($jadwalUmum->hari == $currentDate->format('l')) {
+
+                    $jadwalHarian = JadwalHarian::where('id_jadwal_umum', $jadwalUmumId)
+                                                ->where('tanggal', $currentDate->format('Y-m-d'))
+                                                ->first();
+                    if($jadwalHarian) {
+                        return response([
+                            'message' => 'Already Generated',
+                            'data' => null
+                        ], 400);
+                    } else {
+                        $jadwalHarians[] = [
+                            'id_jadwal_umum' => $jadwalUmumId,
+                            'id_instruktur' => $jadwalUmum->id_instruktur, 
+                            'tanggal' => $currentDate->format('Y-m-d'),
+                            'kapasitas' => 10,
+                            'status' => '',
+                        ];
+                    }
+                }
+            }
+
+            $currentDate->addDay();
+        }
+
+        JadwalHarian::insert($jadwalHarians);
+        return response([
+            'message' => 'Next Week Schedule Has Generated Successfully',
+            'data' => $jadwalHarians,
+        ], 200);
     }
 }

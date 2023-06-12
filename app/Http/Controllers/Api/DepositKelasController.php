@@ -84,15 +84,13 @@ class DepositKelasController extends Controller
         $storeData['status'] = 1;
         if($storeData['id_promo'] == 3){
             if ($storeData['deposit_kelas'] == 5) {
-
-                $storeData['deposit_kelas'] = $storeData['deposit_kelas'] + 1;
                 $storeData['deposit'] = $kelas->harga * $storeData['deposit_kelas'];
+                $storeData['deposit_kelas'] = $storeData['deposit_kelas'] + 1;
                 $storeData['masa_berlaku'] = date('Y-m-d', strtotime('+1 month'));
 
             } else if ($storeData['deposit_kelas'] == 10) {
-
-                $storeData['deposit_kelas'] = $storeData['deposit_kelas'] + 3;
                 $storeData['deposit'] = $kelas->harga * $storeData['deposit_kelas'];
+                $storeData['deposit_kelas'] = $storeData['deposit_kelas'] + 3;
                 $storeData['masa_berlaku'] = date('Y-m-d', strtotime('+2 month'));
             }
             $member->deposit_kelas = $storeData['deposit'];
@@ -126,22 +124,26 @@ class DepositKelasController extends Controller
     public function resetDeposit($id) {
 
         $depositKelas = DepositKelas::find($id);
-
-        if($depositKelas->status == 0){
-            return response([
-                'message' => 'Deposit Kelas Already Expired',
-                'data' => null
-            ], 400);
-        }
-        if($depositKelas->masa_berlaku > date('Y-m-d')){
+        if($depositKelas->status == 1 || $depositKelas->masa_berlaku > date('Y-m-d')){
             return response([
                 'message' => 'Class Deposit is still Active',
                 'data' => null
             ], 400);
         }
 
+        // $depositKelas = DepositKelas::all();
+        // foreach($depositKelas as $deposit){
+        //     $depositKelas->status = 0;
+        //     $depositKelas->masa_berlaku = date('Y-m-d');
+            
+        //     $member = Member::find($depositKelas->id_member);
+        //     $member->deposit_kelas = 0;
+            
+        //     $depositKelas->save();
+        //     $member->save();
+        // }    
+
         $depositKelas->status = 0;
-        $depositKelas->masa_berlaku = date('Y-m-d');
         
         $member = Member::find($depositKelas->id_member);
         $member->deposit_kelas = 0;

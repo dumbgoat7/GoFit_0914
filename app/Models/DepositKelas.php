@@ -23,6 +23,7 @@ class DepositKelas extends Model
         'deposit',
         'deposit_kelas',
         'masa_berlaku',
+        'status'
     ];
 
     public function Promo(){

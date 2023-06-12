@@ -61,6 +61,7 @@ Route::group(['middleware' => 'auth:PegawaiPage'], function(){
     Route::get('/showSaturdayHarian', [App\Http\Controllers\Api\JadwalHarianController::class, 'jadwalHarianSaturday']);
     Route::get('/showSundayHarian', [App\Http\Controllers\Api\JadwalHarianController::class, 'jadwalHarianSunday']);
     Route::get('/search/{class}', [App\Http\Controllers\Api\JadwalHarianController::class, 'search']);
+    Route::post('/generateJadwal', [App\Http\Controllers\Api\JadwalHarianController::class, 'generateJadwal']);
     
     Route::apiResource("/depositReguler", App\Http\Controllers\Api\DepositRegulerController::class);
     Route::apiResource("/depositKelas", App\Http\Controllers\Api\DepositKelasController::class);
@@ -72,7 +73,6 @@ Route::group(['middleware' => 'auth:PegawaiPage'], function(){
     Route::put('/ijin/isConfirmed/{id}', [App\Http\Controllers\Api\IjinController::class, 'isConfirmed']);
 
     Route::apiResource("/bookingKelas", App\Http\Controllers\Api\bookingKelasController::class);
-    Route::put('/presensi/{id}', [App\Http\Controllers\Api\bookingKelasController::class, 'presensi']);
     Route::get('/getDatabookingKelas/{id}',[App\Http\Controllers\Api\bookingKelasController::class, 'getDatabookingKelas']);
     Route::get('/getDatabookingKelasPaket/{id}',[App\Http\Controllers\Api\bookingKelasController::class, 'getDatabookingKelasPaket']);
     
@@ -85,8 +85,7 @@ Route::group(['middleware' => 'auth:PegawaiPage'], function(){
     Route::get('/showActivityMember/{id}', [App\Http\Controllers\Api\MemberController::class, 'showActivityMember']);
 
     Route::get('/laporanGym/{bulan}', [App\Http\Controllers\Api\LaporanController::class, 'laporanGym']);
-    Route::get('/laporanGymThisMonth', [App\Http\Controllers\Api\LaporanController::class, 'laporanGymThisMonth']);
-
+    Route::get('/laporanKelas/{bulan}', [App\Http\Controllers\Api\LaporanController::class, 'laporanKelas']);
 });
 
 Route::group(['middleware' => 'auth:MemberPage'], function(){
@@ -100,7 +99,6 @@ Route::group(['middleware' => 'auth:MemberPage'], function(){
 
     Route::get('/showDepositRegulerMember/{id}', [App\Http\Controllers\Api\DepositRegulerController::class, 'showDepositRegulerMember']);
 
-    
     Route::get('/showActiveDepositKelasMember/{id}', [App\Http\Controllers\Api\DepositKelasController::class, 'showActiveDepositKelasMember']);
     Route::get('/showDepositKelasMember/{id}', [App\Http\Controllers\Api\DepositKelasController::class, 'showDepositKelasMember']);
     Route::get('/showActivationMember/{id}', [App\Http\Controllers\Api\TransaksiAktivasiController::class, 'showActivationMember']);
@@ -108,8 +106,15 @@ Route::group(['middleware' => 'auth:MemberPage'], function(){
     Route::get('/showBookingKelasMember/{id}', [App\Http\Controllers\Api\bookingKelasController::class, 'showBookingKelasMember']);
     
     Route::get('/showBookingbyMember/{id}', [App\Http\Controllers\Api\bookingGymController::class, 'showbyMember']);
+
+    Route::apiResource("/bookingKelasMobile", App\Http\Controllers\Api\bookingKelasController::class);
 });
 
 Route::group(['middleware' => 'auth:InstrukturPage'], function(){
+    Route::apiResource('/instrukturMobile', App\Http\Controllers\Api\InstrukturController::class);
+
+    Route::apiResource("/ijinInstruktur", App\Http\Controllers\Api\IjinController::class);
+    Route::get('/showByInstruktur/{id}', [App\Http\Controllers\Api\IjinController::class, 'showByInstruktur']);
+    Route::put('/presensi/{id}', [App\Http\Controllers\Api\bookingKelasController::class, 'presensi']);
 
 });

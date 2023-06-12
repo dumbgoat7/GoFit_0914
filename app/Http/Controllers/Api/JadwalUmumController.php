@@ -44,7 +44,6 @@ class JadwalUmumController extends Controller
             'id_instruktur' => 'required|numeric',
             'hari' => 'required',
             'jam_mulai' => 'required|date_format:H:i:s',
-            'sesi_jadwal' => 'required|boolean',
         ]);
         if($validate->fails()) {
             return response(['message' => $validate->errors()],400);
@@ -53,13 +52,18 @@ class JadwalUmumController extends Controller
         
         if($checkData){
             return response([
-                'message' => 'Schedule Already Exist',
+                'message' => 'This Instructor Already have Schedule on the Same Time',
                 'data' => $checkData
             ], 400);
         }
+        if($storeData['jam_mulai'] >= '17:00:00'){
+            $storeData['sesi_jadwal'] = 1;
+        } else {
+            $storeData['sesi_jadwal'] = 0;
+        }
         $jadwalUmum = JadwalUmum::create($storeData);
         return response([
-            'message' => 'Add Jadwal Umum Success',
+            'message' => 'Schedule Added Successfully',
             'data' => $jadwalUmum
         ], 200);
     }
@@ -107,19 +111,23 @@ class JadwalUmumController extends Controller
             'id_instruktur' => 'required',
             'hari' => 'required',
             'jam_mulai' => 'required|date_format:H:i:s',
-            'sesi_jadwal' => 'required|boolean',
         ]);
         if($validate->fails()){
             return response(['message' => $validate->errors()],400);
         }
-        $checkData = DB::SELECT("SELECT * FROM jadwal_umum WHERE id_instruktur = $storeData[id_instruktur] AND jam_mulai = '$storeData[jam_mulai]'" );
+        $checkData = DB::SELECT("SELECT * FROM jadwal_umum WHERE id_instruktur = $updateData[id_instruktur] AND jam_mulai = '$updateData[jam_mulai]'" );
         
         if($checkData){
             return response([
-                'message' => 'Schedule Already Exist',
+                'message' => 'This Instructor Already have Schedule on the Same Time',
                 'data' => $checkData
             ], 400);
         } else {
+            if($updateData['jam_mulai'] >= '17:00:00'){
+                $updateData['sesi_jadwal'] = 1;
+            } else {
+                $updateData['sesi_jadwal'] = 0;
+            }
             $jadwalUmum->id_kelas = $updateData['id_kelas'];
             $jadwalUmum->id_instruktur = $updateData['id_instruktur'];
             $jadwalUmum->hari = $updateData['hari'];

@@ -102,6 +102,17 @@ class presensiInstrukturController extends Controller
         ->select('presensi_instruktur.*', 'instruktur.nama_instruktur as nama_instruktur', 'kelas.nama_kelas as nama_kelas')
         ->where('presensi_instruktur.id_instruktur', '=', $id)
         ->get();
+
+        if($presensi){
+            return response([
+                'message' => 'Retrieve All Success',
+                'data' => $presensi
+            ],200);
+        }
+        return response([
+            'message' => 'Empty',
+            'data' => null
+        ], 400);
     }
 
     /**

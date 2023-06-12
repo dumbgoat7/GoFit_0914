@@ -49,11 +49,17 @@ class IjinController extends Controller
 
         $validate = Validator::make($storeData, [
             'id_instruktur' => 'required',
-            'id_mo' => 'required',
             'id_instruktur_pengganti' => 'required',
             'tanggal_ijin' => 'required',
             'keterangan' => 'required',
         ]);
+
+        if($storeData['id_instruktur'] == $storeData['id_instruktur_pengganti']) {
+            return response([
+                'message' => 'Invalid Substitute Instructor',
+                'data' => null
+            ], 400);
+        }
 
         $storeData['tanggal_pembuatan_ijin'] = date('Y-m-d');
         $startdate = Carbon::parse($storeData['tanggal_pembuatan_ijin']);
@@ -67,7 +73,7 @@ class IjinController extends Controller
         $storeData['status'] = '0';
         $ijin = IjinInstruktur::create($storeData);
         return response([
-            'message' => 'Absence Request Created',
+            'message' => 'Absence Request Sent, Wait for Confirmation',
             'data' => $ijin,
         ], 200);
     }
@@ -99,6 +105,25 @@ class IjinController extends Controller
         ], 400);   
     }
 
+    public function showByInstruktur($id) {
+        $ijin = DB::table('ijin_instruktur')
+            ->join('instruktur', 'ijin_instruktur.id_instruktur', '=', 'instruktur.id')
+            ->join('instruktur as instruktur_pengganti', 'ijin_instruktur.id_instruktur_pengganti', '=', 'instruktur_pengganti.id')
+            ->select('ijin_instruktur.*', 'instruktur.nama_instruktur', 'instruktur_pengganti.nama_instruktur as nama_instruktur_pengganti')
+            ->where('instruktur.id', '=', $id)
+            ->get();
+        
+        if(count($ijin) > 0){
+            return response([
+                'message' => 'Retrieve Data Success',
+                'data' => $ijin
+            ], 200);
+        }
+        return response([
+            'message' => 'Empty',
+            'data' => null
+        ], 400);   
+    }
 
     public function countIjin($id) {
         // $ijin = DB::table('ijin_instruktur')

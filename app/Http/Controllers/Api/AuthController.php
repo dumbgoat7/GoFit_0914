@@ -27,7 +27,7 @@ class AuthController extends Controller
         }
 
         if (!Auth::guard('pegawai')->attempt($loginData)) {
-            return response(['message'=> 'Invalid Credential'],401);
+            return response(['message'=> 'This username and password is not a employee'],401);
         }
         $user = Auth::guard('pegawai')->user();
         $token = $user->createToken('Authentication Token')->accessToken;
