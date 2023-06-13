@@ -22,7 +22,7 @@ class InstrukturController extends Controller
         //     ->groupBy('instruktur.id', 'instruktur.nama_instruktur', 'instruktur.no_telp', 'instruktur.alamat_instruktur', 'instruktur.gaji_instruktur', 'instruktur.email_instruktur', 'instruktur.tanggal_lahir', 'instruktur.username', 'instruktur.password')
         //     ->get();
         
-            $query = "Select *, (SELECT COUNT(id_instruktur) FROM ijin_instruktur WHERE ijin_instruktur.id_instruktur = instruktur.id) as jumlah_ijin FROM instruktur";
+            $query = "Select *, (SELECT COUNT(id_instruktur) FROM ijin_instruktur WHERE ijin_instruktur.id_instruktur = instruktur.id) as jumlah_ijin, (SELECT SUM(waktu_terlambat) FROM presensi_instruktur WHERE presensi_instruktur.id_instruktur = instruktur.id) as waktu_terlambat FROM instruktur";
             $instruktur = DB::select(DB::raw($query));
 
         if(count($instruktur) > 0){
@@ -76,7 +76,8 @@ class InstrukturController extends Controller
      */
     public function show($id)
     {
-        $instruktur = Instruktur::find($id);
+        $query = "Select *, (SELECT COUNT(id_instruktur) FROM ijin_instruktur WHERE ijin_instruktur.id_instruktur = instruktur.id) as jumlah_ijin, (SELECT SUM(waktu_terlambat) FROM presensi_instruktur WHERE presensi_instruktur.id_instruktur = instruktur.id) as waktu_terlambat FROM instruktur WHERE id = $id ";
+        $instruktur = DB::select(DB::raw($query));
 
         if (!is_null($instruktur)) {
             return response([

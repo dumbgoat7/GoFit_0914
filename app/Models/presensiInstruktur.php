@@ -8,11 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class presensiInstruktur extends Model
 {
     use HasFactory;
-    protected $table = "promo";
+    protected $table = "presensi_instruktur";
     public $timestamps = false;
     protected $primaryKey = "id";
     protected $fillable = [
-        'id_mo',
         'id_instruktur',
         'id_jadwal',
         'tanggal_presensi',

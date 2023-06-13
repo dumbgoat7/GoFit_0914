@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Validator;
 use App\Models\presensiInstruktur;
 use App\Models\HadwalHarian;
 use App\Models\JadwalUmum;
+use App\Models\JadwalHarian;
 use App\Models\Instruktur;
 use App\Models\Kelas;
 use Carbon\Carbon;
@@ -27,7 +28,7 @@ class presensiInstrukturController extends Controller
         ->join('instruktur', 'instruktur.id', '=', 'presensi_instruktur.id_instruktur')
         ->join('jadwal_umum', 'jadwal_umum.id_jadwal', '=', 'jadwal_harian.id_jadwal_umum')
         ->join('kelas', 'kelas.id_kelas', '=', 'jadwal_umum.id_kelas')
-        ->select('presensi_instruktur.*', 'instruktur.nama_instruktur as nama_instruktur', 'kelas.nama_kelas as nama_kelas')
+        ->select('presensi_instruktur.*', 'jadwal_umum.jam_mulai','instruktur.nama_instruktur as nama_instruktur', 'kelas.nama_kelas as nama_kelas')
         ->get();
 
         return response()->json([
@@ -53,8 +54,8 @@ class presensiInstrukturController extends Controller
         $validate = Validator::make($presensiData,[
             'id_instruktur' => 'required',
             'id_jadwal' => 'required',
-            'tanggal_presensi' => 'required',
-            'jam_datang' => 'required',
+            // 'tanggal_presensi' => 'required',
+            // 'jam_datang' => 'required',
         ]);
 
         if($validate->fails())
@@ -63,7 +64,15 @@ class presensiInstrukturController extends Controller
         $jadwalHarian = JadwalHarian::find($presensiData['id_jadwal']);
         $jadwal = JadwalUmum::find($jadwalHarian->id_jadwal_umum);
         
+        $check = presensiInstruktur::where('id_jadwal', $presensiData['id_jadwal']);
+        if($check->count() > 0){
+            return response([
+                'message' => 'Instructor has attended the class',
+                'data' => $check->get()
+            ],400);
+        }
         $presensiData['jam_datang'] = date("H:i:s");
+        $presensiData['tanggal_presensi'] = date("Y-m-d");
 
         if($presensiData['jam_datang'] > $jadwal->jam_mulai){
             //Terlambat
@@ -75,6 +84,7 @@ class presensiInstrukturController extends Controller
             $presensiData['waktu_terlambat'] = $timeDifference;
 
         }else{
+            $presensiData['waktu_terlambat'] = "0";
             $presensiData['status'] = "0";
         }
         
@@ -99,13 +109,13 @@ class presensiInstrukturController extends Controller
         ->join('instruktur', 'instruktur.id', '=', 'presensi_instruktur.id_instruktur')
         ->join('jadwal_umum', 'jadwal_umum.id_jadwal', '=', 'jadwal_harian.id_jadwal_umum')
         ->join('kelas', 'kelas.id_kelas', '=', 'jadwal_umum.id_kelas')
-        ->select('presensi_instruktur.*', 'instruktur.nama_instruktur as nama_instruktur', 'kelas.nama_kelas as nama_kelas')
+        ->select('presensi_instruktur.*', 'jadwal_umum.jam_mulai','instruktur.nama_instruktur as nama_instruktur', 'kelas.nama_kelas as nama_kelas')
         ->where('presensi_instruktur.id_instruktur', '=', $id)
         ->get();
 
         if($presensi){
             return response([
-                'message' => 'Retrieve All Success',
+                'message' => 'Instructor Attandance',
                 'data' => $presensi
             ],200);
         }
@@ -114,6 +124,7 @@ class presensiInstrukturController extends Controller
             'data' => null
         ], 400);
     }
+
 
     /**
      * Update the specified resource in storage.

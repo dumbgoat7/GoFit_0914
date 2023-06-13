@@ -62,6 +62,7 @@ Route::group(['middleware' => 'auth:PegawaiPage'], function(){
     Route::get('/showSundayHarian', [App\Http\Controllers\Api\JadwalHarianController::class, 'jadwalHarianSunday']);
     Route::get('/search/{class}', [App\Http\Controllers\Api\JadwalHarianController::class, 'search']);
     Route::post('/generateJadwal', [App\Http\Controllers\Api\JadwalHarianController::class, 'generateJadwal']);
+    Route::get('/showbyDay/{day}', [App\Http\Controllers\Api\JadwalHarianController::class, 'showbyDay']);
     
     Route::apiResource("/depositReguler", App\Http\Controllers\Api\DepositRegulerController::class);
     Route::apiResource("/depositKelas", App\Http\Controllers\Api\DepositKelasController::class);
@@ -86,6 +87,7 @@ Route::group(['middleware' => 'auth:PegawaiPage'], function(){
 
     Route::get('/laporanGym/{bulan}', [App\Http\Controllers\Api\LaporanController::class, 'laporanGym']);
     Route::get('/laporanKelas/{bulan}', [App\Http\Controllers\Api\LaporanController::class, 'laporanKelas']);
+    Route::get('/laporanPendapatan/{tahun}', [App\Http\Controllers\Api\LaporanController::class, 'laporanPendapatan']);
 });
 
 Route::group(['middleware' => 'auth:MemberPage'], function(){

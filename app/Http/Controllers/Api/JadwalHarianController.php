@@ -263,6 +263,34 @@ class JadwalHarianController extends Controller
         ], 400);
     }
 
+    public function showbyDay($day){
+        $startDate = Carbon::now()->startOfWeek(); // Get the start date of the current week (Monday)
+        $endDate = $startDate->copy()->addDays(6); // Get the end date of the current week (Sunday)
+        
+        $jadwalHarian = DB::table('jadwal_harian')
+                        ->join('jadwal_umum', 'jadwal_harian.id_jadwal_umum', '=', 'jadwal_umum.id_jadwal')
+                        ->join('kelas', 'jadwal_umum.id_kelas', '=', 'kelas.id_kelas')
+                        ->join('instruktur', 'jadwal_harian.id_instruktur', '=', 'instruktur.id')
+                        ->select('jadwal_harian.*','jadwal_harian.id_jadwal_umum', 'jadwal_umum.sesi_jadwal', 'jadwal_umum.hari','jadwal_umum.jam_mulai', 
+                        'jadwal_umum.id_kelas', 'kelas.nama_kelas', 'instruktur.nama_instruktur')
+                        ->where('jadwal_umum.hari', '=', $day)
+                        ->whereBetween('jadwal_harian.tanggal', [$startDate,$endDate])
+                        ->orderby('jadwal_umum.jam_mulai', 'asc')
+                        ->get();
+
+        if(count($jadwalHarian) > 0){
+            return response([
+                'message' => 'Jadwal Harian Found',
+                'data' => $jadwalHarian
+            ], 200);
+        }
+        return response([
+            'message' => 'There is no class today',
+            'data' => null
+        ], 400);
+
+    }
+
     /**
      * Store a newly created resource in storage.
      *
