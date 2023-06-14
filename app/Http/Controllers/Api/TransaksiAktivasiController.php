@@ -99,16 +99,16 @@ class TransaksiAktivasiController extends Controller
                     ->where('id_member', $id)
                     ->get();
         
-        if(count($aktivasi) > 0){
+        if($aktivasi){
             return response([
                 'message' => 'Retrieve All Success',
                 'data' => $aktivasi
             ], 200);
         }
-        return response([
-            'message' => 'Empty',
-            'data' => null
-        ], 400);
+        // return response([
+        //     'message' => 'Empty',
+        //     'data' => null
+        // ], 400);
     }
 
     public function show($id)

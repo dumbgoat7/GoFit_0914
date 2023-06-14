@@ -302,16 +302,12 @@ class bookingKelasController extends Controller
             ->where('booking_kelas.id_member', '=', $id)
             ->get();
 
-        if(count($bookingkelas) == 0){
+        if($bookingkelas){
             return response([
-                'message' => 'Member has not booked any class',
-                'data' => null
-            ], 404);
+                'message' => 'Retrieve Gym Class Booking',
+                'data' => $bookingkelas
+            ], 200);
         }
-        return response([
-            'message' => 'Retrieve Booking Success',
-            'data' => $bookingkelas
-        ], 200);
     }
     /**
      * Update the specified resource in storage.

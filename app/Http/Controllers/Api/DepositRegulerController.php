@@ -122,16 +122,16 @@ class DepositRegulerController extends Controller
             ->where('transaksi_deposit_reguler.id_member', '=', $id)
             ->get();
 
-        if (!is_null($depositReguler)) {
+        if ($depositReguler) {
             return response([
                 'message' => 'Retrieve Deposit Reguler Success',
                 'data' => $depositReguler
             ], 200);
         }
-        return response([
-            'message' => 'You have not made a regular deposit yet',
-            'data' => null
-        ], 404);
+        // return response([
+        //     'message' => 'You have not made a regular deposit yet',
+        //     'data' => null
+        // ], 404);
     }
     
     /**

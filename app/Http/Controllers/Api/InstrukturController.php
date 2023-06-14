@@ -76,7 +76,10 @@ class InstrukturController extends Controller
      */
     public function show($id)
     {
-        $query = "Select *, (SELECT COUNT(id_instruktur) FROM ijin_instruktur WHERE ijin_instruktur.id_instruktur = instruktur.id) as jumlah_ijin, (SELECT SUM(waktu_terlambat) FROM presensi_instruktur WHERE presensi_instruktur.id_instruktur = instruktur.id) as waktu_terlambat FROM instruktur WHERE id = $id ";
+        $query = "Select *, (SELECT COUNT(id_instruktur) FROM ijin_instruktur WHERE ijin_instruktur.id_instruktur = instruktur.id) as jumlah_ijin, 
+        (SELECT SUM(waktu_terlambat) FROM presensi_instruktur WHERE presensi_instruktur.id_instruktur = instruktur.id) as waktu_terlambat, 
+        (SELECT COUNT(id) FROM presensi_instruktur WHERE presensi_instruktur.id_instruktur = instruktur.id) as jumlah_hadir  
+        FROM instruktur WHERE id = $id ";
         $instruktur = DB::select(DB::raw($query));
 
         if (!is_null($instruktur)) {

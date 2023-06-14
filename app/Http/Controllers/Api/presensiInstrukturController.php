@@ -119,10 +119,6 @@ class presensiInstrukturController extends Controller
                 'data' => $presensi
             ],200);
         }
-        return response([
-            'message' => 'Empty',
-            'data' => null
-        ], 400);
     }
 
 

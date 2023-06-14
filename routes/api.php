@@ -88,6 +88,7 @@ Route::group(['middleware' => 'auth:PegawaiPage'], function(){
     Route::get('/laporanGym/{bulan}', [App\Http\Controllers\Api\LaporanController::class, 'laporanGym']);
     Route::get('/laporanKelas/{bulan}', [App\Http\Controllers\Api\LaporanController::class, 'laporanKelas']);
     Route::get('/laporanPendapatan/{tahun}', [App\Http\Controllers\Api\LaporanController::class, 'laporanPendapatan']);
+    ROute::get('/laporanKinerja/{bulan}', [App\Http\Controllers\Api\LaporanController::class, 'laporanKinerja']);
 });
 
 Route::group(['middleware' => 'auth:MemberPage'], function(){

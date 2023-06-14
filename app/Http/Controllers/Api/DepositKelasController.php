@@ -193,16 +193,12 @@ class DepositKelasController extends Controller
         ->where('transaksi_deposit_kelas.id_member', '=', $id)
         ->get();
 
-        if(count($depositKelas) > 0){
+        if($depositKelas){
             return response([
                 'message' => 'Retrieve Class Deposit Member Success',
                 'data' => $depositKelas
             ], 200);
         }
-        return response([
-            'message' => 'You have not made a class deposit yet',
-            'data' => null
-        ], 400);
     }
 
     public function showActiveDepositKelasMember($id){

@@ -171,4 +171,33 @@ class LaporanController extends Controller
 
     }
 
+    public function laporanKinerja($month)
+    {
+        $bulan = Carbon::now()->month;
+        if (!empty($month)) {
+            $bulan = $month;
+        }
+
+        $tanggalCetak = Carbon::now();
+        
+        $query = "
+        SELECT
+            nama_instruktur,
+            (SELECT COUNT(id_instruktur) FROM ijin_instruktur WHERE ijin_instruktur.id_instruktur = instruktur.id AND MONTH(ijin_instruktur.tanggal_ijin) = $month) as jumlah_ijin,
+            COALESCE((SELECT SUM(waktu_terlambat) FROM presensi_instruktur WHERE presensi_instruktur.id_instruktur = instruktur.id AND MONTH(presensi_instruktur.tanggal_presensi) = $month), 0) as waktu_terlambat,
+            (SELECT COUNT(id) FROM presensi_instruktur WHERE presensi_instruktur.id_instruktur = instruktur.id AND MONTH(presensi_instruktur.tanggal_presensi) = $month) as jumlah_hadir
+        FROM
+            instruktur
+        GROUP BY
+            nama_instruktur, id;
+        ";
+
+        $laporanKinerja = DB::select(DB::raw($query));
+
+        return response([
+            'data' => $laporanKinerja,
+            'tanggal_cetak' => $tanggalCetak,
+        ]);
+    }
+
 }

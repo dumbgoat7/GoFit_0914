@@ -150,16 +150,12 @@ class bookingGymController extends Controller
             ->where('booking_gym.id_member', '=', $id)
             ->get();
         
-            if(count($bookingGym) > 0){
+            if($bookingGym){
                 return response([
                     'message' => 'Retrieve All Success',
                     'data' => $bookingGym
                 ], 200);
             }
-            return response([
-                'message' => 'No Booking',
-                'data' => null
-            ], 400);
     }
 
 
